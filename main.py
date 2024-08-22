@@ -10,6 +10,11 @@ class Krizovatka:
 
         self.vjezdy = []
         self.lines = []
+    
+    def update_lines(self):
+        self.lines = []
+        for vjezd in self.vjezdy:
+            self.lines.extend(vjezd.lines)
 
 class Vjezd:
     def __init__(self, krizovatka, name, rule, orientace, rule_type=None):
@@ -51,7 +56,8 @@ class Pohyb:
         self.intenzita_nadrazenych = None
         #self.G = self.vypocet_G()
         #self.C = self.urci_C()
-        
+    
+        vjezd.krizovatka.update_lines()
         
         
         
@@ -164,24 +170,25 @@ class Pohyb:
             C = self.G
         return C
 
-    def vytvor_list_nadrazenych_proudu(self):
-        if self.stupen_podrazenosti == 1:
-            nadrazeni = []
-        elif self.stupen_podrazenosti == 2:
-            if self.cislo_proudu == 1:
-                nadrazeni = [8,9]
+   
 
-def najdi_intenzitu_dle_cisla(cislo_proudu):
-    pass
-    #for pohyb in ### nejak udelat storage pro vsechny vjezdy
-    
+def show_all_pohyby(krizovatka):
+    for pohyb in krizovatka.lines:
+        print(pohyb.cislo_proudu, pohyb.smer, pohyb.intenzita, "vjezd:", pohyb.vjezd.name)
+        
+def najdi_intenzitu_pohybu(kritovatka, cislo):
+    for proud in kritovatka.lines:
+        if proud.cislo_proudu == cislo:
+            hledana_intenzita = proud.intenzita
+    return hledana_intenzita
+       
 ### použití pokusné ###############################################################
 
 cross1= Krizovatka("Dablicka x Bestakova", 4, 50)
 
 vjezd1 = Vjezd(cross1, "Zapad", "hlavni", 1 )
-vjezd2 = Vjezd (cross1," Sever", "vedlejsi", 2, "P4")
-vjezd3 = Vjezd (cross1," Východ", "vedlejsi", 3)
+vjezd2 = Vjezd (cross1,"Sever", "vedlejsi", 2, "P4")
+vjezd3 = Vjezd (cross1,"Východ", "vedlejsi", 3)
 vjezd4 = Vjezd (cross1,"Jih", "vedlejsi", 4, "P4")
 
 pohyb1 = Pohyb("L", 1, 200, vjezd1)
@@ -218,5 +225,8 @@ print(pohyb1.stupen_podrazenosti)
 print(pohyb1.cislo_proudu)
 
  """
-print(pohyb12.cislo_proudu)
-print(pohyb6.cislo_proudu)
+""" print(pohyb12.cislo_proudu)
+print(pohyb6.cislo_proudu) """
+
+show_all_pohyby(cross1)
+print(najdi_intenzitu_pohybu(cross1, 1))
