@@ -11,10 +11,7 @@ class Krizovatka:
         self.vjezdy = []
         self.lines = []
     
-    def update_lines(self):
-        self.lines = []
-        for vjezd in self.vjezdy:
-            self.lines.extend(vjezd.lines)
+    
 
 class Vjezd:
     def __init__(self, krizovatka, name, rule, orientace, rule_type=None):
@@ -38,7 +35,8 @@ class Vjezd:
 class Pohyb:
     def __init__(self, smer, pocet_pruhu, intenzita, vjezd, krizovatka):
         vjezd.lines.append(self) 
-    
+        krizovatka.lines.append(self)
+        
         self.vjezd = vjezd # kam patří
         self.kriz = krizovatka
         self.smer = smer # L S R left straight right
@@ -54,11 +52,11 @@ class Pohyb:
         self.stupen_podrazenosti = self.urci_stupen_podrazenosti()
         self.Tg = self.urceni_Tg() # kritický časový odstup
         self.Tf = self.urceni_Tf() # následný časový odstup
-        self.intenzita_nadrazenych = self.vypocet_nadrazenych_I()
+        #self.intenzita_nadrazenych = self.vypocet_nadrazenych_I()
         #self.G = self.vypocet_G()
         #self.C = self.urci_C()
     
-        vjezd.krizovatka.update_lines()
+        
         
         
         
