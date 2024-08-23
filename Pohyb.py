@@ -1,0 +1,178 @@
+import math
+
+class Pohyb:
+    def __init__(self, smer, pocet_pruhu, intenzita, vjezd, krizovatka):
+        vjezd.lines.append(self) 
+        krizovatka.lines.append(self)
+        
+        self.vjezd = vjezd # kam patří
+        self.kriz = krizovatka
+        self.smer = smer # L S R left straight right
+        self.pocet_pruhu = pocet_pruhu
+        self.intenzita = intenzita
+        self.rule = vjezd.rule
+        self.rule_type = vjezd.rule_type
+        self.druh = self.smer + "_" + self.rule # druh dopravního proudu  napr. "leve obcoeni z vedeljsi"
+        
+        
+        self.cislo_proudu = self.urci_cislo_proudu()
+        self.p0 = None # pravděpodobnost nevzdutí nadřazených
+        self.stupen_podrazenosti = self.urci_stupen_podrazenosti()
+        self.Tg = self.urceni_Tg() # kritický časový odstup
+        self.Tf = self.urceni_Tf() # následný časový odstup
+        #self.intenzita_nadrazenych = self.vypocet_nadrazenych_I()
+        #self.G = self.vypocet_G()
+        #self.C = self.urci_C()
+    
+        
+        
+        
+        
+    def vypocet_G(self):
+        G = (3600 / self.Tf ) * math.exp (-self.intenzita_nadrazenych /3600)*(self.Tg - (self.Tf /2))
+        return G
+    
+    def urceni_Tg(self):
+        Tg= None
+        if  self.vjezd.krizovatka.speed == 50:
+            if self.druh == "L_hlavni":
+                Tg = 4.5
+            elif self.druh == "R_vedlejsi":
+                Tg = 4.7
+            elif self.druh == "S_vedlejsi":
+                Tg = 6.2
+            elif self.druh == "L_vedlejsi":
+                Tg = 6.3
+            
+            
+        else:
+            print("pro zadanou rychlost není výpočet k dispozici")    
+            exit()
+        return Tg
+    def urceni_Tf(self):
+        Tf= None
+        if self.druh == "L_hlavni":
+                Tf = 2.6
+        if self.rule_type == "P4":
+
+            if self.druh == "R_vedlesji":
+                Tf = 3.1
+            elif self.druh == "S_vedlesji":
+                Tf = 3.3
+            elif self.druh == "L_vedlejsi":
+                Tf = 3.5
+             
+            
+        
+        elif self.rule_type == "P6":
+    
+            if self.druh == "R_vedlesji":
+                Tf = 3.7
+            elif self.druh == "S_vedlesji":
+                Tf = 3.9
+            if self.druh == "L_vedlejsi":
+                Tf = 4.1
+            
+        
+        return Tf
+    
+    def urci_stupen_podrazenosti(self):
+        if self.vjezd.rule == "hlavni":
+            if self.smer == "S" or self.smer == "R":
+                stupen = 1
+            elif self.smer == "L":
+                stupen = 2
+        elif self.vjezd.rule == "vedlejsi":
+            if self.vjezd.krizovatka.branch_count == 4:
+                if self.smer == "S":
+                    stupen = 3
+                if self.smer == "R":
+                    stupen = 2
+                if self.smer == "L":
+                    stupen = 4
+            if self.vjezd.krizovatka.branch_count == 3:
+                if self.smer == "R":
+                    stupen = 2
+                if self.smer == "L":
+                    stupen = 3
+        return stupen   
+    def urci_cislo_proudu(self):
+        if self.vjezd.orientace == 1:
+            if self.smer == "L":
+                cislo_proudu = 1
+            if self.smer == "S":
+                cislo_proudu = 2
+            if self.smer == "R":
+                cislo_proudu = 3
+                
+        elif self.vjezd.orientace == 2:
+            if self.smer == "L":
+                cislo_proudu = 10
+            if self.smer == "S":
+                cislo_proudu = 11
+            if self.smer == "R":
+                cislo_proudu = 12
+                
+        elif self.vjezd.orientace == 3:
+            if self.smer == "L":
+                cislo_proudu = 7
+            if self.smer == "S":
+                cislo_proudu = 8
+            if self.smer == "R":
+                cislo_proudu = 9
+                
+        elif self.vjezd.orientace == 4:
+            if self.smer == "L":
+                cislo_proudu = 4
+            if self.smer == "S":
+                cislo_proudu = 5
+            if self.smer == "R":
+                cislo_proudu = 6
+        return cislo_proudu
+    
+    def urci_C(self):
+        if self.stupen_podrazenosti == 1:
+            C = 1800 * self.pocet_pruhu
+        elif self.stupen_podrazenosti == 2:
+            C = self.G
+        return C
+
+    def vypocet_nadrazenych_I(self):
+        if self.stupen_podrazenosti == 1:
+            I_nadrazene = 0
+        else :
+            if self.cislo_proudu == 1:
+                I_nadrazene = Pohyb.Pohyb.I_phb(self.kriz, 8) + Pohyb.I_phb(self.kriz, 9)
+            elif self.cislo_proudu == 7:
+                I_nadrazene = Pohyb.I_phb(self.kriz, 2) + Pohyb.I_phb(self.kriz, 3)
+            elif self.cislo_proudu == 6:
+                I_nadrazene = Pohyb.I_phb(self.kriz, 2) + 0.5 * Pohyb.I_phb(self.kriz, 3)
+            elif self.cislo_proudu == 12:
+                I_nadrazene = Pohyb.I_phb(self.kriz, 8) + 0.5 * Pohyb.I_phb(self.kriz, 9)
+            elif self.cislo_proudu == 5:
+                I_nadrazene = ( Pohyb.I_phb(self.kriz, 2) + 0.5 * Pohyb.I_phb(self.kriz, 3) + Pohyb.I_phb(self.kriz, 8) 
+                               + Pohyb.I_phb(self.kriz, 9) + Pohyb.I_phb(self.kriz, 1) + Pohyb.I_phb(self.kriz, 7)
+                )
+            elif self.cislo_proudu == 11:
+                I_nadrazene =( Pohyb.I_phb(self.kriz, 8) + 0.5 * Pohyb.I_phb(self.kriz, 9)
+                + Pohyb.I_phb(self.kriz, 2) + Pohyb.I_phb(self.kriz, 3) + Pohyb.I_phb(self.kriz, 1) + Pohyb.I_phb(self.kriz, 7)   
+                )
+            elif self.cislo_proudu == 4:
+                I_nadrazene =( Pohyb.I_phb(self.kriz, 2) + 0.5 * Pohyb.I_phb(self.kriz, 3)
+                + Pohyb.I_phb(self.kriz, 8) +  0.5 * Pohyb.I_phb(self.kriz, 9) + Pohyb.I_phb(self.kriz, 1) + Pohyb.I_phb(self.kriz, 7) 
+                + Pohyb.I_phb(self.kriz, 12)  + Pohyb.I_phb(self.kriz, 11)   
+                )   
+            elif self.cislo_proudu == 10:
+                I_nadrazene =( Pohyb.I_phb(self.kriz, 8) + 0.5 * Pohyb.I_phb(self.kriz, 9)
+                + Pohyb.I_phb(self.kriz, 2) +  0.5 * Pohyb.I_phb(self.kriz,3) + Pohyb.I_phb(self.kriz, 1) + Pohyb.I_phb(self.kriz, 7) 
+                + Pohyb.I_phb(self.kriz, 6)  + Pohyb.I_phb(self.kriz, 5)   
+                ) 
+        return I_nadrazene
+    
+    @staticmethod
+    def I_phb(kritovatka, cislo):
+        for proud in kritovatka.lines:
+            if proud.cislo_proudu == cislo:
+                hledana_intenzita = proud.intenzita
+        return hledana_intenzita
+       
