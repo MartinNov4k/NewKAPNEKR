@@ -8,7 +8,10 @@ class Krizovatka:
 
         self.vjezdy = []
         self.lines = []
-    
+
+    #### spatne- nemelo by bejt v teto class odkazovano na cizi atributy- pozdeji předělat
     def vypsat_vsechny_pohyby (self):
         for pohyb in self.lines:
             print(pohyb.cislo_proudu, pohyb.smer, pohyb.intenzita, "vjezd:", pohyb.vjezd.name)
+
+    

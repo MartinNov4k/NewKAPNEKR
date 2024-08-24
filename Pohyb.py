@@ -2,32 +2,57 @@ import math
 
 class Pohyb:
     def __init__(self, smer, pocet_pruhu, intenzita, vjezd, krizovatka):
+        
         vjezd.lines.append(self) 
         krizovatka.lines.append(self)
-        
+
+        # primo zadane
         self.vjezd = vjezd # kam patří
         self.kriz = krizovatka
         self.smer = smer # L S R left straight right
         self.pocet_pruhu = pocet_pruhu
         self.intenzita = intenzita
+
+        # prevzate
         self.rule = vjezd.rule
         self.rule_type = vjezd.rule_type
+
+        # hned pocitne
         self.druh = self.smer + "_" + self.rule # druh dopravního proudu  napr. "leve obcoeni z vedeljsi"
-        
-        
         self.cislo_proudu = self.urci_cislo_proudu()
-        self.p0 = None # pravděpodobnost nevzdutí nadřazených
-        self.stupen_podrazenosti = self.urci_stupen_podrazenosti()
         self.Tg = self.urceni_Tg() # kritický časový odstup
         self.Tf = self.urceni_Tf() # následný časový odstup
-        #self.intenzita_nadrazenych = self.vypocet_nadrazenych_I()
-        #self.G = self.vypocet_G()
-        #self.C = self.urci_C()
-    
-        
-        
-        
-        
+        self.stupen_podrazenosti = self.urci_stupen_podrazenosti()
+
+        # pozdeji pocitane _ zavisle 
+
+        self._intenzita_nadrazenych = None
+        self._G = None
+        self._C = None
+        self.p0 = None # pravděpodobnost nevzdutí nadřazených   
+
+    #lazy evaluation
+    @property
+    def intenzita_nadrazenych(self):
+        if self._intenzita_nadrazenych is None:
+            self._intenzita_nadrazenych = self.vypocet_nadrazenych_I()
+        return self._intenzita_nadrazenych
+
+    @property
+    def G(self):
+        if self.stupen_podrazenosti == 1:
+            self._G = None
+        else:
+            if self._G is None:
+                self._G = round(self.vypocet_G())
+        return self._G
+
+    @property
+    def C(self):
+        if self._C is None:
+            self._C = self.urci_C()
+        return self._C
+
     def vypocet_G(self):
         G = (3600 / self.Tf ) * math.exp (-self.intenzita_nadrazenych /3600)*(self.Tg - (self.Tf /2))
         return G
@@ -55,10 +80,10 @@ class Pohyb:
                 Tf = 2.6
         if self.rule_type == "P4":
 
-            if self.druh == "R_vedlesji":
+            if self.druh == "R_vedlejsi":
                 Tf = 3.1
-            elif self.druh == "S_vedlesji":
-                Tf = 3.3
+            elif self.druh == "S_vedlejsi":
+                Tf = 3.3        
             elif self.druh == "L_vedlejsi":
                 Tf = 3.5
              
@@ -66,9 +91,9 @@ class Pohyb:
         
         elif self.rule_type == "P6":
     
-            if self.druh == "R_vedlesji":
+            if self.druh == "R_vedlejsi":
                 Tf = 3.7
-            elif self.druh == "S_vedlesji":
+            elif self.druh == "S_vedlejsi":
                 Tf = 3.9
             if self.druh == "L_vedlejsi":
                 Tf = 4.1
@@ -135,6 +160,8 @@ class Pohyb:
             C = 1800 * self.pocet_pruhu
         elif self.stupen_podrazenosti == 2:
             C = self.G
+        else:    ### dodělat
+            C= 0
         return C
 
     def vypocet_nadrazenych_I(self):
@@ -142,7 +169,7 @@ class Pohyb:
             I_nadrazene = 0
         else :
             if self.cislo_proudu == 1:
-                I_nadrazene = Pohyb.Pohyb.I_phb(self.kriz, 8) + Pohyb.I_phb(self.kriz, 9)
+                I_nadrazene = Pohyb.I_phb(self.kriz, 8) + Pohyb.I_phb(self.kriz, 9)
             elif self.cislo_proudu == 7:
                 I_nadrazene = Pohyb.I_phb(self.kriz, 2) + Pohyb.I_phb(self.kriz, 3)
             elif self.cislo_proudu == 6:
@@ -176,3 +203,13 @@ class Pohyb:
                 hledana_intenzita = proud.intenzita
         return hledana_intenzita
        
+    def vypis_vlastnosti(self):
+        print("--")
+        print(f"Vjezd: {self.vjezd.name}") # tady by se asi nemělo odkazovat na atribut z jine class
+        print(f"Směr: {self.smer}")
+        print(f"Přednost: {self.rule}")
+        print(f"stupen podrazenosti {self.stupen_podrazenosti}")
+        print(f"I nadrazenych {self.intenzita_nadrazenych}")
+        print (f"G: {self.G}")
+        print(f"C: {self.C}")
+        print("--")
