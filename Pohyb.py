@@ -54,7 +54,7 @@ class Pohyb:
         return self._C
 
     def vypocet_G(self):
-        G = (3600 / self.Tf ) * math.exp (-self.intenzita_nadrazenych /3600)*(self.Tg - (self.Tf /2))
+        G = (3600 / self.Tf) * math.exp(-self.intenzita_nadrazenych / 3600 * (self.Tg - self.Tf / 2))
         return G
     
     def urceni_Tg(self):
@@ -205,6 +205,7 @@ class Pohyb:
        
     def vypis_vlastnosti(self):
         print("--")
+        print(self.cislo_proudu)
         print(f"Vjezd: {self.vjezd.name}") # tady by se asi nemělo odkazovat na atribut z jine class
         print(f"Směr: {self.smer}")
         print(f"Přednost: {self.rule}")
