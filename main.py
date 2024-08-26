@@ -6,26 +6,26 @@ from Vjezd import Vjezd
 
 cross1= Krizovatka("Dablicka x Bestakova", 4, 50)
 
-vjezd1 = Vjezd(cross1, "Zapad", "hlavni", 1 )
-vjezd2 = Vjezd (cross1,"Sever", "vedlejsi", 2, "P4")
-vjezd3 = Vjezd (cross1,"Východ", "hlavni", 3)
-vjezd4 = Vjezd (cross1,"Jih", "vedlejsi", 4, "P4")
+Zapad = Vjezd(cross1, "Zapad", "hlavni", 1 )
+Sever = Vjezd (cross1,"Sever", "vedlejsi", 2, "P4")
+Vychod = Vjezd (cross1,"Východ", "hlavni", 3)
+Jih = Vjezd (cross1,"Jih", "vedlejsi", 4, "P4")
 
-pohyb1 = Pohyb("L", 1, 22, vjezd1 ,cross1)
-pohyb2= Pohyb("S", 1, 270, vjezd1,cross1)
-pohyb3= Pohyb("R", 1, 21, vjezd1,cross1)
+pohyb1 = Pohyb("L", 1, 22, Zapad ,cross1)
+pohyb2= Pohyb("S", 1, 270, Zapad,cross1)
+pohyb3= Pohyb("R", 1, 21, Zapad,cross1)
 
-pohyb4 = Pohyb("L", 1, 6, vjezd2,cross1)
-pohyb5= Pohyb("S", 1, 21, vjezd2,cross1)
-pohyb6= Pohyb("R", 1, 157, vjezd2,cross1)
+pohyb4 = Pohyb("L", 1, 6, Jih, cross1)
+pohyb5= Pohyb("S", 1, 230, Jih,cross1)
+pohyb6= Pohyb("R", 1, 157, Jih, cross1)
 
-pohyb7 = Pohyb("L", 1, 117, vjezd3,cross1)
-pohyb8= Pohyb("S", 1, 230, vjezd3,cross1)
-pohyb9= Pohyb("R", 1, 144, vjezd3,cross1)
+pohyb7 = Pohyb("L", 1, 117,Vychod, cross1)
+pohyb8= Pohyb("S", 1, 230, Vychod,cross1)
+pohyb9= Pohyb("R", 1, 144, Vychod,cross1)
 
-pohyb10 = Pohyb("L", 1, 12, vjezd4,cross1)
-pohyb11= Pohyb("S", 1, 59, vjezd4,cross1)
-pohyb12= Pohyb("R", 1, 145, vjezd4,cross1)
+pohyb10 = Pohyb("L", 1, 12, Sever,cross1)
+pohyb11= Pohyb("S", 1, 59, Sever,cross1)
+pohyb12= Pohyb("R", 1, 145, Sever,cross1)
 
 """ print(pohyb1.Tf)
 print(pohyb1.Tg)

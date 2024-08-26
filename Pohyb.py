@@ -1,7 +1,7 @@
 import math
 
 class Pohyb:
-    def __init__(self, smer, pocet_pruhu, intenzita, vjezd, krizovatka):
+    def __init__(self, smer, pocet_pruhu, intenzita_VSE,intenzita_PV, vjezd, krizovatka):
         
         vjezd.lines.append(self) 
         krizovatka.lines.append(self)
@@ -11,13 +11,15 @@ class Pohyb:
         self.kriz = krizovatka
         self.smer = smer # L S R left straight right
         self.pocet_pruhu = pocet_pruhu
-        self.intenzita = intenzita
+        self.intenzita = intenzita_VSE  #intenzita šechna vozidla
+        self.intenzita_PV = intenzita_PV # nakladni vozidla 
 
         # prevzate
         self.rule = vjezd.rule
         self.rule_type = vjezd.rule_type
 
         # hned pocitne
+        self.Zohlednena_skladba = (self.intenzita - self.intenzita_PV) + 1,5 * self.intenzita_PV
         self.druh = self.smer + "_" + self.rule # druh dopravního proudu  napr. "leve obcoeni z vedeljsi"
         self.cislo_proudu = self.urci_cislo_proudu()
         self.Tg = self.urceni_Tg() # kritický časový odstup
