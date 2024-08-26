@@ -61,21 +61,19 @@ class Pohyb:
     
     def urceni_Tg(self):
         Tg= None
-        if  self.vjezd.krizovatka.speed == 50:
-            if self.druh == "L_hlavni":
-                Tg = 4.5
-            elif self.druh == "R_vedlejsi":
-                Tg = 4.7
-            elif self.druh == "S_vedlejsi":
-                Tg = 6.2
-            elif self.druh == "L_vedlejsi":
-                Tg = 6.3
+        V_85 =self.vjezd.krizovatka.speed # nejvyssi dovolena rychlost na hlavni
+        if self.druh == "L_hlavni":
+                Tg = 3.4 + 0.021 * V_85
+        elif self.druh == "R_vedlejsi":
+                Tg = 2.8 + 0.038 * V_85
+        elif self.druh == "S_vedlejsi":
+                Tg = 4.4 + 0.036 * V_85
+        elif self.druh == "L_vedlejsi":
+                Tg = 5.2 + 0.022 *V_85
             
-            
-        else:
-            print("pro zadanou rychlost není výpočet k dispozici")    
-            exit()
+       
         return Tg
+    
     def urceni_Tf(self):
         Tf= None
         if self.druh == "L_hlavni":
