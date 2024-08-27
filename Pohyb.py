@@ -68,7 +68,11 @@ class Pohyb:
     def p(self):
         if self._p is None:
             if self.C:
-                self._p = 1 - self.av
+                p = 1 - self.av
+                if p > 0 :
+                    self._p = p
+                else:
+                    self._p = 0
                 
         return self._p
     
@@ -175,12 +179,25 @@ class Pohyb:
     def urci_C(self):
         if self.stupen_podrazenosti == 1:
             C = 1800 * self.pocet_pruhu
+            
         elif self.stupen_podrazenosti == 2:
             C = self.G
+            
         elif self.stupen_podrazenosti == 3: # C5 C11
                 C = Pohyb.P_phb(self.kriz, 1) * Pohyb.P_phb(self.kriz, 7) * self.G
-        else:
-            C= None
+                
+        elif self.stupen_podrazenosti == 4 : #C4 #C10
+            
+            if self.cislo_proudu == 4:
+                px = Pohyb.P_phb(self.kriz, 1) * Pohyb.P_phb(self.kriz, 7)
+                p11 = Pohyb.P_phb(self.kriz, 11)
+                C = self.G * Pohyb.P_phb(self.kriz, 12) * (1 / (1 + ((1- px) / px) + ((1 - p11)/p11) ))
+                
+            if self.cislo_proudu == 10:
+                px = Pohyb.P_phb(self.kriz, 1) * Pohyb.P_phb(self.kriz, 7)
+                p5 = Pohyb.P_phb(self.kriz, 5)
+                C = self.G * Pohyb.P_phb(self.kriz, 12) * (1 / (1 + ((1- px) / px) + ((1 - p5)/p5) ))
+                
         return C
 
     def vypocet_nadrazenych_I(self):
