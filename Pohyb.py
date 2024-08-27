@@ -19,7 +19,7 @@ class Pohyb:
         self.rule_type = vjezd.rule_type
 
         # hned pocitne
-        self.Zohlednena_skladba = (self.intenzita - self.intenzita_PV) + 1,5 * self.intenzita_PV
+        self.zohlednena_skladba = (self.intenzita - self.intenzita_PV) + 1.5 * self.intenzita_PV
         self.druh = self.smer + "_" + self.rule # druh dopravního proudu  napr. "leve obcoeni z vedeljsi"
         self.cislo_proudu = self.urci_cislo_proudu()
         self.Tg = self.urceni_Tg() # kritický časový odstup
@@ -31,7 +31,9 @@ class Pohyb:
         self._intenzita_nadrazenych = None
         self._G = None
         self._C = None
-        self.p0 = None # pravděpodobnost nevzdutí nadřazených   
+        self._av = None # stupen vytížení
+        self._p = None # pravděpodobnost nevzdutí nadřazených
+        self._L95 = None # delka fronty 95% casu   
 
     #lazy evaluation
     @property
@@ -55,6 +57,21 @@ class Pohyb:
             self._C = self.urci_C()
         return self._C
 
+    @property
+    def av(self):
+        if self._av is None:
+            if self.C:
+                self._av = self.zohlednena_skladba / self.C
+        return self._av
+    
+    @property
+    def p(self):
+        if self._p is None:
+            if self.C:
+                self._p = 1 - self._av
+                
+        return self._p
+    
     def vypocet_G(self):
         G = (3600 / self.Tf) * math.exp(-self.intenzita_nadrazenych / 3600 * (self.Tg - self.Tf / 2))
         return G
@@ -160,7 +177,9 @@ class Pohyb:
             C = 1800 * self.pocet_pruhu
         elif self.stupen_podrazenosti == 2:
             C = self.G
-        else:    ### dodělat
+        elif self.stupen_podrazenosti == 3:
+            C= 0
+        else:
             C= 0
         return C
 
@@ -211,6 +230,9 @@ class Pohyb:
         print(f"Přednost: {self.rule}")
         print(f"stupen podrazenosti {self.stupen_podrazenosti}")
         print(f"I nadrazenych {self.intenzita_nadrazenych}")
+        print(f"pvoz {self.zohlednena_skladba}")
         print (f"G: {self.G}")
         print(f"C: {self.C}")
+        print(f"av: {self.av}")
+        print(f"p: {self.p}")
         print("--")
