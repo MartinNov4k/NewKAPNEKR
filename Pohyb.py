@@ -1,7 +1,7 @@
 import math
 
 class Pohyb:
-    def __init__(self, smer, pocet_pruhu, intenzita_VSE,intenzita_PV, vjezd, krizovatka):
+    def __init__(self, smer, intenzita_VSE, intenzita_PV, vjezd, krizovatka, id, pocet_pruhu, delka_pruhu_nebo_roszireni=None):
         
         vjezd.lines.append(self) 
         krizovatka.lines.append(self)
@@ -13,6 +13,8 @@ class Pohyb:
         self.pocet_pruhu = pocet_pruhu
         self.intenzita = intenzita_VSE  #intenzita šechna vozidla
         self.intenzita_PV = intenzita_PV # nakladni vozidla 
+        self.id = id # pořádí /id pruhu v rámci vjezdu (paprsku)
+        self.delka_JP = delka_pruhu_nebo_roszireni
 
         # prevzate
         self.rule = vjezd.rule
@@ -34,6 +36,8 @@ class Pohyb:
         self._av = None # stupen vytížení
         self._p = None # pravděpodobnost nevzdutí nadřazených
         self._L95 = None # delka fronty 95% casu   
+        self._spolecny_pruh = None
+        self._C_spolecna = None #kapacita spolecneho pruhu
 
     #lazy evaluation
     @property
@@ -75,6 +79,26 @@ class Pohyb:
                     self._p = 0
                 
         return self._p
+    
+    @property
+    def L95(self):
+        if self._L95 is None:
+            if self.C:
+                self._L95 = round((3/2) * self.C * (self.av - 1 + math.sqrt((1 - self.av)**2 + 3 * (8 * self.av) / self.C)))
+        return self._L95
+    
+    @property
+    def spolecny_pruh(self):
+        if self._spolecny_pruh is None:
+            self._spolecny_pruh = self.spolecny_pruh_check() # dodělat
+        return self._spolecny_pruh
+    
+    @property
+    def C_spolecna(self):
+        if self._C_spolecna is None:
+            self._C_spolecna = self.urci_spolecnou_C() # dodělat
+        return self._C_spolecna
+    
     
     def vypocet_G(self):
         G = (3600 / self.Tf) * math.exp(-self.intenzita_nadrazenych / 3600 * (self.Tg - self.Tf / 2))
@@ -231,7 +255,28 @@ class Pohyb:
                 + Pohyb.I_phb(self.kriz, 6)  + Pohyb.I_phb(self.kriz, 5)   
                 ) 
         return I_nadrazene
+  
+    def spolecny_pruh_check(self):
+        spolecne_pruhy = []
+        for pohyb in self.vjezd.lines:
+            if pohyb.id == self.id and pohyb.cislo_proudu != self.cislo_proudu:
+                   spolecne_pruhy.append(pohyb.druh)
+        return spolecne_pruhy
     
+    def urci_spolecnou_C(self):
+        sum_I = 0
+        sum_av = 0
+        if self.stupen_podrazenosti != 1 and  len(self.spolecny_pruh) >= 1:
+            for pohyb in self.vjezd.lines:
+                for spolecny_pruh in self.spolecny_pruh:
+                    if pohyb.cislo_proudu == spolecny_pruh:
+                        sum_I += pohyb.zohlednena_skladba
+                        sum_av += pohyb.av
+                        
+            return sum_I /sum_av
+        else:
+            return None
+        
     @staticmethod
     def I_phb(kritovatka, cislo):
         for proud in kritovatka.lines:
@@ -260,4 +305,7 @@ class Pohyb:
         print(f"av: {self.av}")
         print(f"p: {self.p}")
         print(f"C: {self.C}")
+        print(f"L_95: {self.L95}")
+        print(f"Spol pruhy: {self.spolecny_pruh}")
+        print(f"Spol C: {self.C_spolecna}")
         print("--")
