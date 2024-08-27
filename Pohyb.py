@@ -68,7 +68,7 @@ class Pohyb:
     def p(self):
         if self._p is None:
             if self.C:
-                self._p = 1 - self._av
+                self._p = 1 - self.av
                 
         return self._p
     
@@ -177,10 +177,10 @@ class Pohyb:
             C = 1800 * self.pocet_pruhu
         elif self.stupen_podrazenosti == 2:
             C = self.G
-        elif self.stupen_podrazenosti == 3:
-            C= 0
+        elif self.stupen_podrazenosti == 3: # C5 C11
+                C = Pohyb.P_phb(self.kriz, 1) * Pohyb.P_phb(self.kriz, 7) * self.G
         else:
-            C= 0
+            C= None
         return C
 
     def vypocet_nadrazenych_I(self):
@@ -222,6 +222,13 @@ class Pohyb:
                 hledana_intenzita = proud.intenzita
         return hledana_intenzita
        
+    @staticmethod
+    def P_phb(kritovatka, cislo):
+        for proud in kritovatka.lines:
+            if proud.cislo_proudu == cislo:
+                hledane_p = proud.p
+        return hledane_p
+    
     def vypis_vlastnosti(self):
         print("--")
         print(self.cislo_proudu)
@@ -232,7 +239,8 @@ class Pohyb:
         print(f"I nadrazenych {self.intenzita_nadrazenych}")
         print(f"pvoz {self.zohlednena_skladba}")
         print (f"G: {self.G}")
-        print(f"C: {self.C}")
+        
         print(f"av: {self.av}")
         print(f"p: {self.p}")
+        print(f"C: {self.C}")
         print("--")
