@@ -264,7 +264,7 @@ class Pohyb:
         return spolecne_pruhy
      
     def urci_spolecnou_C(self):
-        if self.stupen_podrazenosti > 1 and len(self.spolecny_pruh) >= 1 and self.vjezd.rule == "vedlejsi": # dopracovat to pro výpočet i na hlavní
+        if self.stupen_podrazenosti > 1 and len(self.spolecny_pruh) >= 1 and self.vjezd.rule == "vedlejsi":
             sum_I = self.zohlednena_skladba
             sum_av = self.av
             for pohyb in self.vjezd.lines:
@@ -274,6 +274,19 @@ class Pohyb:
                         sum_av += pohyb.av
                         
             return sum_I /sum_av
+        elif self.vjezd.rule == "hlavni":  ###doupravit pocitani bez pruhu vlevo nebo s nim se zahrnuti delky
+            sum_I = self.zohlednena_skladba
+            sum_av = self.av
+            if self.delka_JP is None:
+                for pohyb in self.vjezd.lines:
+                    for spolecny_pruh in self.spolecny_pruh:
+                        if pohyb.cislo_proudu == spolecny_pruh:
+                            sum_I += pohyb.zohlednena_skladba
+                            sum_av += pohyb.av
+                
+                return sum_I /sum_av
+            else:
+                pass
         else:
             return None
         
