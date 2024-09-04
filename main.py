@@ -59,4 +59,13 @@ for pohyb in cross1.lines:
 
 
 
-
+""" for pohyb in Jih.lines:
+    print(pohyb.cislo_proudu)
+    print(pohyb.druh)
+    print(pohyb.zohlednena_skladba)
+    print( f"nadrazene proudy I {pohyb.intenzita_nadrazenych}")
+    print( f"nadrazene proudy I {pohyb.intenzita_nadrazenych}")
+    print(pohyb.av)
+    print(pohyb.C)
+    print(pohyb.C_spolecna)
+    print("--") """

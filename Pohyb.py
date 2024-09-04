@@ -260,13 +260,13 @@ class Pohyb:
         spolecne_pruhy = []
         for pohyb in self.vjezd.lines:
             if pohyb.id == self.id and pohyb.cislo_proudu != self.cislo_proudu:
-                   spolecne_pruhy.append(pohyb.druh)
+                   spolecne_pruhy.append(pohyb.cislo_proudu)
         return spolecne_pruhy
-    
+     
     def urci_spolecnou_C(self):
-        sum_I = 0
-        sum_av = 0
-        if self.stupen_podrazenosti != 1 and  len(self.spolecny_pruh) >= 1:
+        if self.stupen_podrazenosti > 1 and len(self.spolecny_pruh) >= 1 and self.vjezd.rule == "vedlejsi": # dopracovat to pro výpočet i na hlavní
+            sum_I = self.zohlednena_skladba
+            sum_av = self.av
             for pohyb in self.vjezd.lines:
                 for spolecny_pruh in self.spolecny_pruh:
                     if pohyb.cislo_proudu == spolecny_pruh:
