@@ -55,7 +55,7 @@ print(Pohyb.I_phb(cross1, 1))
 for pohyb in cross1.lines:
     pohyb.vypis_vlastnosti() 
 
-
+print(pohyb1.kriz.branch_count)
 
 
 

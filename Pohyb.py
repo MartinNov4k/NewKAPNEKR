@@ -36,7 +36,8 @@ class Pohyb:
         self._av = None # stupen vytížení
         self._p = None # pravděpodobnost nevzdutí nadřazených
         self._L95 = None # delka fronty 95% casu   
-        self._spolecny_pruh = None
+        self._spolecny_pruh = None #list cisel proudu ve společném pruhu -- asi zbytečné při refaktoru vhodně nahradit
+        self._spolecny_pruh_instances = None # list instancí společných pruhů
         self._C_spolecna = None #kapacita spolecneho pruhu
 
     #lazy evaluation
@@ -90,9 +91,15 @@ class Pohyb:
     @property
     def spolecny_pruh(self):
         if self._spolecny_pruh is None:
-            self._spolecny_pruh = self.spolecny_pruh_check() # dodělat
+            self._spolecny_pruh = self.spolecny_pruh_check()[0] 
         return self._spolecny_pruh
     
+    @property
+    def spolecny_pruh_instances(self):
+        if self._spolecny_pruh_instances is None:
+            self._spolecny_pruh_instances = self.spolecny_pruh_check()[1] 
+        return self._spolecny_pruh_instances
+
     @property
     def C_spolecna(self):
         if self._C_spolecna is None:
@@ -258,22 +265,67 @@ class Pohyb:
   
     def spolecny_pruh_check(self):
         spolecne_pruhy = []
+        spolecne_pruhy_instances = []
         for pohyb in self.vjezd.lines:
             if pohyb.id == self.id and pohyb.cislo_proudu != self.cislo_proudu:
-                   spolecne_pruhy.append(pohyb.cislo_proudu)
-        return spolecne_pruhy
+                spolecne_pruhy.append(pohyb.cislo_proudu) #cislo proudu
+                spolecne_pruhy_instances.append(pohyb)  # odkazy na konkretni instance
+
+        return spolecne_pruhy, spolecne_pruhy_instances
      
+
+
     def urci_spolecnou_C(self):
-        if self.stupen_podrazenosti > 1 and len(self.spolecny_pruh) >= 1 and self.vjezd.rule == "vedlejsi":
-            sum_I = self.zohlednena_skladba
-            sum_av = self.av
-            for pohyb in self.vjezd.lines:
-                for spolecny_pruh in self.spolecny_pruh:
-                    if pohyb.cislo_proudu == spolecny_pruh:
-                        sum_I += pohyb.zohlednena_skladba
-                        sum_av += pohyb.av
-                        
-            return sum_I /sum_av
+        if self.stupen_podrazenosti > 1 and len(self.spolecny_pruh) >= 1 and self.vjezd.rule == "vedlejsi":  # vjezdy z vedlejsi
+            
+            if self.delka_JP is None and all(pohyb.delka_JP is None for pohyb in self.spolecny_pruh_instances[:2]): # ověření zda žádny z pohybů ze společných proudů nemá rozšíření
+                # neni rozšíření ani na jednom společném pohybu
+                sum_I = self.zohlednena_skladba
+                sum_av = self.av
+                for pohyb in self.vjezd.lines:
+                    for spolecny_pruh in self.spolecny_pruh:
+                        if pohyb.cislo_proudu == spolecny_pruh:
+                            sum_I += pohyb.zohlednena_skladba
+                            sum_av += pohyb.av
+                            
+                return sum_I /sum_av
+        
+            else:    # min jeden ze společných pohybu ma rozšíření
+                if self.kriz.branch_count == 3:
+                    pass # dodělat
+
+                elif self.kriz.branch_count == 4:
+                    if all(pohyb.delka_JP for pohyb in self.spolecny_pruh_instances[:2]): #nejednoznačné využívání vjezdů
+                        pass
+
+                    elif (                                                  ### rozšíření vpravo
+                            self.smer == "R" and self.delka_JP
+                        ) or (
+                            self.spolecny_pruh_instances[0].delka_JP and
+                            self.spolecny_pruh_instances[0].druh == "R"
+                        ) or (
+                            len(self.spolecny_pruh_instances) > 1 and
+                            self.spolecny_pruh_instances[1].delka_JP and
+                            self.spolecny_pruh_instances[1].druh == "R"
+                        ):
+                        pass 
+
+                    elif (                                                  ### rozšíření vlevo
+                            self.smer == "L" and self.delka_JP
+                        ) or (
+                            self.spolecny_pruh_instances[0].delka_JP and
+                            self.spolecny_pruh_instances[0].druh == "L"
+                        ) or (
+                            len(self.spolecny_pruh_instances) > 1 and
+                            self.spolecny_pruh_instances[1].delka_JP and
+                            self.spolecny_pruh_instances[1].druh == "L"
+                        ):
+                        pass 
+
+
+    
+   
+       
         elif self.vjezd.rule == "hlavni":  ###doupravit pocitani bez pruhu vlevo nebo s nim se zahrnuti delky 
             sum_I = self.zohlednena_skladba
             sum_av = self.av
@@ -288,8 +340,11 @@ class Pohyb:
                     return 1800
                 else:
                     return c_spol
-            else:
+            elif self.delka_JP:
+                # dodělat pro případy s odobočovací JP
                 pass
+
+        
         else:
             return None
         
