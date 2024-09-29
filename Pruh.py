@@ -63,12 +63,32 @@ class Pruh:
                                 
                     return sum_I /sum_av
 
-
+                else:  # min jeden ze společných pohybu ma rozšíření
+                    if self.kriz.branch_count == 3:
+                        pass # dodělat
         
-             
-       
-    
+                    elif self.kriz.branch_count == 4:
+                        if all(pohyb.delka_JP for pohyb in self.pohyby): #nejednoznačné využívání vjezdů
+                            pass #doplnit přislušné vzorce 
+                        
+                        elif any(pohyb.smer == "R" and pohyb.JP for pohyb in self.pohyby): ### rozšíření vpravo vtoec dle TP 188 6-10
+                            # i-L, j-S,k -R
+                            pohyb_i = self.najdi_pohyb("L")
+                            pohyb_j = self.najdi_pohyb("S")
+                            pohyb_k = self.najdi_pohyb("R")
+                            
+                            Lu_vpravo = pohyb_k.delka_JP
+                            factor_odocniny = (Lu_vpravo / 6) + 1
+                            C_vpravo = self.zohlednena_skladba_sum / ((((pohyb_i.a + pohyb_j.a) ** factor_odocniny) + (pohyb_k.a ** factor_odocniny)) ** 1/factor_odocniny)
+
+                            return C_vpravo
+                        
+                        elif any(pohyb.smer == "L" and pohyb.JP for pohyb in self.pohyby): ### rozšíření vpravo
+                            pass
         
 
     def vypis(self):
         print(self.name , self.zohlednena_skladba_sum, self.vjezd.name, self.capacity)
+
+    def najdi_pohyb(self, smer):
+        return next((pohyb for pohyb in self.pohyby if pohyb.smer == smer), None)
