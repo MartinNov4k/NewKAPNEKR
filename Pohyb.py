@@ -38,6 +38,8 @@ class Pohyb:
         self._L95 = None # delka fronty 95% casu   
         self._spolecny_pruh = None #list cisel proudu ve společném pruhu -- asi zbytečné při refaktoru vhodně nahradit
         self._spolecny_pruh_instances = None # list instancí společných pruhů
+        self._spolecny_pruh = None #list cisel proudu ve společném pruhu -- asi zbytečné při refaktoru vhodně nahradit
+        self._spolecny_pruh_instances = None # list instancí společných pruhů
         self._C_spolecna = None #kapacita spolecneho pruhu
 
     #lazy evaluation
@@ -92,7 +94,15 @@ class Pohyb:
     def spolecny_pruh(self):
         if self._spolecny_pruh is None:
             self._spolecny_pruh = self.spolecny_pruh_check()[0] 
+            self._spolecny_pruh = self.spolecny_pruh_check()[0] 
         return self._spolecny_pruh
+    
+    @property
+    def spolecny_pruh_instances(self):
+        if self._spolecny_pruh_instances is None:
+            self._spolecny_pruh_instances = self.spolecny_pruh_check()[1] 
+        return self._spolecny_pruh_instances
+
     
     @property
     def spolecny_pruh_instances(self):
@@ -358,7 +368,11 @@ class Pohyb:
                     return c_spol
             elif self.delka_JP:
                 # dodělat pro případy s odobočovací JP
+            elif self.delka_JP:
+                # dodělat pro případy s odobočovací JP
                 pass
+
+        
 
         
         else:
