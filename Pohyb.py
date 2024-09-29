@@ -367,7 +367,7 @@ class Pohyb:
                 else:
                     return c_spol
             elif self.delka_JP:
-                # dodělat pro případy s odobočovací JP
+                pass
             elif self.delka_JP:
                 # dodělat pro případy s odobočovací JP
                 pass
