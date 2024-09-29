@@ -7,7 +7,8 @@ class Krizovatka:
         self.UKD_vedlejsi = None
 
         self.vjezdy = []
-        self.lines = []
+        self.lines = []  #chybně nazváno ale jsou to pohyby
+        self.pruhy = [] # fyzické pruhy
 
     #### spatne- nemelo by bejt v teto class odkazovano na cizi atributy- pozdeji předělat
     def vypsat_vsechny_pohyby (self):

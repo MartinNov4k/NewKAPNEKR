@@ -12,6 +12,9 @@ class Vjezd:
         self.delay = None
         self.stop_count = None
         self.ukd = None
-        
-        self.lines = []
+        self.pruhy = []  # fyzické pruhy
+        self.lines = []  # pohyby
         krizovatka.vjezdy.append(self)  #přidání do listu vjezdů u Křižovatky
+
+
+        

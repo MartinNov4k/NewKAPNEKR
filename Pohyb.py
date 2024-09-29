@@ -1,5 +1,5 @@
 import math
-
+from Pruh import Pruh
 class Pohyb:
     def __init__(self, smer, intenzita_VSE, intenzita_PV, vjezd, krizovatka, id, pocet_pruhu, delka_pruhu_nebo_roszireni=None):
         
@@ -266,15 +266,30 @@ class Pohyb:
     def spolecny_pruh_check(self):
         spolecne_pruhy = []
         spolecne_pruhy_instances = []
+        
+
         for pohyb in self.vjezd.lines:
             if pohyb.id == self.id and pohyb.cislo_proudu != self.cislo_proudu:
                 spolecne_pruhy.append(pohyb.cislo_proudu) #cislo proudu
                 spolecne_pruhy_instances.append(pohyb)  # odkazy na konkretni instance
 
+        if len(spolecne_pruhy_instances) == 0: # pokud je pruh samostatný
+            print("byl vytvořen samostaný pruh")
+            novy_pruh = Pruh(self.vjezd, self.id)
+            novy_pruh.pohyby.append(self)
         return spolecne_pruhy, spolecne_pruhy_instances
      
-
-
+    def rozrazeni_pruhu(self):
+        if not any(pruh.id == self.id for pruh in self.vjezd.pruhy):
+            novy_pruh = Pruh(self.vjezd, self.id)
+            novy_pruh.pohyby.append(self)
+        else:    
+            for pruh in self.vjezd.pruhy:
+                if self.id == pruh.id and self not in pruh.pohyby:
+                    pruh.pohyby.append(self)
+                    break
+        
+    
     def urci_spolecnou_C(self):
         if self.stupen_podrazenosti > 1 and len(self.spolecny_pruh) >= 1 and self.vjezd.rule == "vedlejsi":  # vjezdy z vedlejsi
             
@@ -308,7 +323,8 @@ class Pohyb:
                             self.spolecny_pruh_instances[1].delka_JP and
                             self.spolecny_pruh_instances[1].druh == "R"
                         ):
-                        pass #doplnit přislušné vzorce 
+                        
+                        pass
 
                     elif (                                                  ### rozšíření vlevo
                             self.smer == "L" and self.delka_JP
@@ -347,7 +363,21 @@ class Pohyb:
         
         else:
             return None
+
+    """ def urceni_spolecne_c_rozsireni_vpravo(self): #vzorec 6-10 dle TP 188
+        I_ijk = 0  # i-L, j-S,k -R
+        a_vi = 0 # vlevo
+        a_vj = 0 
+        av_k = 0
+
+        for pohyb in self.spolecny_pruh_instances:
+            I_ijk += pohyb.zohlednena_skladba
+
+
+        a_vi = 0 # vlevo
+          """
         
+
     @staticmethod
     def I_phb(kritovatka, cislo):
         for proud in kritovatka.lines:
@@ -361,6 +391,9 @@ class Pohyb:
             if proud.cislo_proudu == cislo:
                 hledane_p = proud.p
         return hledane_p
+    
+    
+    
     
     def vypis_vlastnosti(self):
         print("--")
