@@ -283,10 +283,6 @@ class Pohyb:
                 spolecne_pruhy.append(pohyb.cislo_proudu) #cislo proudu
                 spolecne_pruhy_instances.append(pohyb)  # odkazy na konkretni instance
 
-        if len(spolecne_pruhy_instances) == 0: # pokud je pruh samostatný
-            print("byl vytvořen samostaný pruh")
-            novy_pruh = Pruh(self.vjezd, self.id)
-            novy_pruh.pohyby.append(self)
         return spolecne_pruhy, spolecne_pruhy_instances
      
     def rozrazeni_pruhu(self):
