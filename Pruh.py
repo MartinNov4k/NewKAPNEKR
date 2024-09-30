@@ -124,17 +124,10 @@ class Pruh:
                             return C_vlevo
                         
             elif self.vjezd.rule == "hlavni":  ###doupravit pocitani bez pruhu vlevo nebo s nim se zahrnuti delky 
-<<<<<<< HEAD
                 if not any(pohyb.smer == "L" and pohyb.delka_JP for pohyb in self.pohyby): # není odbočovák vlevo z hlavni
                      return min(1800, self.zohlednena_skladba_sum /self.av_sum )
 
                 elif any(pohyb.smer == "L" and pohyb._delkaJP for pohyb in self.pohyby):
-=======
-                if not any(pohyb.smer == "L" and pohyb.JP for pohyb in self.pohyby): # není odbočovák vlevo z hlavni
-                     return min(1800, self.zohlednena_skladba_sum /self.av_sum )
-
-                elif any(pohyb.smer == "L" and pohyb.JP for pohyb in self.pohyby):
->>>>>>> 7fa0bdae2af41b0b4da210e60431d3e8768d4ad2
                      pass
 
                 
