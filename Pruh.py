@@ -14,6 +14,9 @@ class Pruh:
         self._zohlednena_skladba_sum = None
         self._av_sum = None
         self._capacity = None
+        self._L95 = None # délka fronty
+        self._tw = None
+        self._av = None # self av neni v TP pro pruh, ale je to logicke
         
 
     @property
@@ -39,6 +42,24 @@ class Pruh:
             self._capacity = self.count_capacity()
         return  self._capacity
 
+    @property
+    def L95(self):
+        if self._L95 is None:
+            self._L95 = self.count_L95()
+        return  self._L95
+    
+    @property
+    def tw(self):
+        if self._tw is None:
+            self._tw = self.count_tw()
+        return self._tw
+    
+    @property
+    def av(self):
+        if self._av is None:
+            self._av = self.zohlednena_skladba_sum / self.capacity
+        return self._av
+
     def count_Pvoz(self):
         Pvoz_sum = 0
         for pohyb in self.pohyby:
@@ -57,6 +78,16 @@ class Pruh:
               name += pohyb.smer
         return name
     
+    def count_L95(self):
+        if self.capacity == 0:
+            return None
+        else:
+            return 3/2 * self.capacity * (self.av - 1 + ((1-self.av) ** 2 + 3 *((8* self.av)/self.capacity)) ** 1/2)
+
+    def count_tw(self):
+        tw = 3600 / self._capacity + 3600 / 4 * ((self.av - 1) + ((self.av - 1) ** 2 +(8 * 3600 * min(self)) )** 1/2)
+
+
     def count_capacity(self):
 
         assert len(self.pohyby) > 0
@@ -128,8 +159,25 @@ class Pruh:
                      return min(1800, self.zohlednena_skladba_sum /self.av_sum )
 
                 elif any(pohyb.smer == "L" and pohyb._delkaJP for pohyb in self.pohyby):
-                     pass
+                    pohyb_i = self.najdi_pohyb("L")
+                    pohyb_j = self.najdi_pohyb("S")
+                    pohyb_k = self.najdi_pohyb("R")
+                    
+                    pohyb_i_av = pohyb_i.av if pohyb_i is not None else 0
+                    pohyb_j_av = pohyb_j.av if pohyb_j is not None else 0
+                    pohyb_k_av = pohyb_k.av if pohyb_k is not None else 0
 
+                    if pohyb_j_av + pohyb_k_av >= 0 and pohyb_i_av > 0:
+                        return 0
+                    
+                    elif  pohyb_i_av == 0:
+                        return 1800
+                    
+                    elif pohyb_j_av + pohyb_k_av < 1 and pohyb_i_av > 0:
+                        delka_leveho = pohyb_i.delka_JP 
+                        factor = (delka_leveho / 6) + 1
+                        return min((1800, (1+((pohyb_j_av + pohyb_k_av) ** factor)/ (1- pohyb_j_av - pohyb_k_av)) ** 1/factor) * pohyb_i_av)
+                    
                 
 
 
