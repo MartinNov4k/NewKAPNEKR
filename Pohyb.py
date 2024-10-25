@@ -1,7 +1,7 @@
 import math
 from Pruh import Pruh
 class Pohyb:
-    def __init__(self, smer, intenzita_VSE, intenzita_PV, vjezd, krizovatka, id, pocet_pruhu, delka_pruhu_nebo_roszireni=None):
+    def __init__(self, smer, intenzita_OA, intenzita_PV,intenzita_NAV, intenzita_M, intenzita_Cyklo, vjezd, krizovatka, id, pocet_pruhu, delka_pruhu_nebo_roszireni=None):
         
         vjezd.lines.append(self) 
         krizovatka.lines.append(self)
@@ -11,8 +11,11 @@ class Pohyb:
         self.kriz = krizovatka
         self.smer = smer # L S R left straight right
         self.pocet_pruhu = pocet_pruhu
-        self.intenzita = intenzita_VSE  #intenzita šechna vozidla
+        self.intenzita_OA = intenzita_OA  #intenzita OA
         self.intenzita_PV = intenzita_PV # nakladni vozidla 
+        self.intenzita_NAV = intenzita_NAV # návěsy a kloubáky
+        self.intenzita_M = intenzita_M # motorky
+        self.intenzita_Cyklo = intenzita_Cyklo # cyklisti
         self.id = id # pořádí /id pruhu v rámci vjezdu (paprsku)
         self.delka_JP = delka_pruhu_nebo_roszireni
 
@@ -21,7 +24,8 @@ class Pohyb:
         self.rule_type = vjezd.rule_type
 
         # hned pocitne
-        self.zohlednena_skladba = (self.intenzita - self.intenzita_PV) + 1.5 * self.intenzita_PV
+        self.zohlednena_skladba = self.zohlednena_skladba_count()
+        self.intenzita = self.intenzita_OA +self. intenzita_PV + self.intenzita_NAV + self.intenzita_M + self.intenzita_Cyklo
         self.druh = self.smer + "_" + self.rule # druh dopravního proudu  napr. "leve obcoeni z vedeljsi"
         self.cislo_proudu = self.urci_cislo_proudu()
         self.Tg = self.urceni_Tg() # kritický časový odstup
@@ -117,6 +121,11 @@ class Pohyb:
         return self._C_spolecna
     
     
+
+    def zohlednena_skladba_count(self):
+        zohledenna_skladba =self.intenzita_OA + self.intenzita_PV * 1.5 + self.intenzita_NAV * 2 + self.intenzita_M * 0.8 + self.intenzita_Cyklo * 0.5
+        return round(zohledenna_skladba)
+
     def vypocet_G(self):
         G = (3600 / self.Tf) * math.exp(-self.intenzita_nadrazenych / 3600 * (self.Tg - self.Tf / 2))
         return G

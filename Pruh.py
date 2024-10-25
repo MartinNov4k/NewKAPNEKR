@@ -85,7 +85,10 @@ class Pruh:
             return round(3/2 * self.capacity * (self.av - 1 + ((1-self.av) ** 2 + 3 *((8* self.av)/self.capacity)) ** 1/2))
 
     def count_tw(self):
-        tw = 3600 / self._capacity + 3600 / 4 * ((self.av - 1) + ((self.av - 1) ** 2 +(8 * 3600 * min(self.av, 1) / 3600 * self.capacity) )** 1/2)
+        if self.capacity > 0:
+            tw = 3600 / self.capacity + 3600 / 4 * ((self.av - 1) + ((self.av - 1) ** 2 +(8 * 3600 * min(self.av, 1) / 3600 * self.capacity) )** 1/2)
+        else:
+            tw = 9999999999
         return round(tw)
 
     def count_capacity(self):
@@ -122,6 +125,8 @@ class Pruh:
                         pohyb_i_av = pohyb_i.av if pohyb_i is not None else 0
                         pohyb_j_av = pohyb_j.av if pohyb_j is not None else 0
                         pohyb_k_av = pohyb_k.av if pohyb_k is not None else 0
+                        factor_odocniny_vpravo = (Lu_vpravo / 6) + 1
+                        factor_odocniny_vlevo = (Lu_vlevo / 6) + 1
 
                         C_vpravo =  min(
                                             1800,
@@ -139,11 +144,6 @@ class Pruh:
 
                         if all(pohyb.delka_JP for pohyb in self.pohyby): #nejednoznačné využívání vjezdů
                             
-                            
-                            factor_odocniny_vpravo = (Lu_vpravo / 6) + 1
-                            factor_odocniny_vlevo = (Lu_vlevo / 6) + 1
-
-                            
                             return (C_vpravo + C_vlevo) * (self.zohlednena_skladba_sum + pohyb_i_av + pohyb_j_av + pohyb_k_av)
 
                         elif any(pohyb.smer == "R" and pohyb.delka_JP for pohyb in self.pohyby): ### rozšíření vpravo vzorec dle TP 188 6-10
@@ -158,7 +158,7 @@ class Pruh:
                 if not any(pohyb.smer == "L" and pohyb.delka_JP for pohyb in self.pohyby): # není odbočovák vlevo z hlavni
                      return min(1800, self.zohlednena_skladba_sum /self.av_sum )
 
-                elif any(pohyb.smer == "L" and pohyb._delkaJP for pohyb in self.pohyby):
+                elif any(pohyb.smer == "L" and pohyb.delka_JP for pohyb in self.pohyby):
                     pohyb_i = self.najdi_pohyb("L")
                     pohyb_j = self.najdi_pohyb("S")
                     pohyb_k = self.najdi_pohyb("R")
