@@ -13,8 +13,8 @@ Vychod = Vjezd (cross1,"Východ", "hlavni", 3)
 Jih = Vjezd (cross1,"Jih", "vedlejsi", 4, "P6")
 
 pohyb1 = Pohyb("L", 22, 5, Zapad ,cross1, 1, 1)
-pohyb2= Pohyb("S", 270, 85, Zapad, cross1, 3, 1)
-pohyb3= Pohyb("R", 21, 15, Zapad, cross1, 2, 1)
+pohyb2= Pohyb("S", 270, 88, Zapad, cross1, 1, 1)
+pohyb3= Pohyb("R", 21, 15, Zapad, cross1, 1, 1)
 
 pohyb4 = Pohyb("L", 12, 5, Jih, cross1, 1, 1)
 pohyb5= Pohyb("S", 59, 7, Jih, cross1, 1, 1)

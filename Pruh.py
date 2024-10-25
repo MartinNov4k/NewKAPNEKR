@@ -82,11 +82,11 @@ class Pruh:
         if self.capacity == 0:
             return None
         else:
-            return 3/2 * self.capacity * (self.av - 1 + ((1-self.av) ** 2 + 3 *((8* self.av)/self.capacity)) ** 1/2)
+            return round(3/2 * self.capacity * (self.av - 1 + ((1-self.av) ** 2 + 3 *((8* self.av)/self.capacity)) ** 1/2))
 
     def count_tw(self):
-        tw = 3600 / self._capacity + 3600 / 4 * ((self.av - 1) + ((self.av - 1) ** 2 +(8 * 3600 * min(self)) )** 1/2)
-
+        tw = 3600 / self._capacity + 3600 / 4 * ((self.av - 1) + ((self.av - 1) ** 2 +(8 * 3600 * min(self.av, 1) / 3600 * self.capacity) )** 1/2)
+        return round(tw)
 
     def count_capacity(self):
 
@@ -182,7 +182,7 @@ class Pruh:
 
 
     def vypis(self):
-        print(self.name , self.zohlednena_skladba_sum, self.vjezd.name, self.capacity)
+        print( self.vjezd.name, self.name,"pvoz:", self.zohlednena_skladba_sum, "Capacity:", self.capacity, "L95:", self.L95, "Tw:", self.tw)
 
     def najdi_pohyb(self, smer):
         return next((pohyb for pohyb in self.pohyby if pohyb.smer == smer), None)
