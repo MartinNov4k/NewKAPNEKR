@@ -1,3 +1,5 @@
+import math
+
 class Pruh:
     instances = []
 
@@ -82,11 +84,11 @@ class Pruh:
         if self.capacity == 0:
             return None
         else:
-            return round(3/2 * self.capacity * (self.av - 1 + ((1-self.av) ** 2 + 3 *((8* self.av)/self.capacity)) ** 1/2))
+            return round((3/2) * self.capacity * (self.av - 1 + math.sqrt((1 - self.av)**2 + 3 * (8 * self.av) / self.capacity)))
 
     def count_tw(self):
         if self.capacity > 0:
-            tw = 3600 / self.capacity + 3600 / 4 * ((self.av - 1) + ((self.av - 1) ** 2 +(8 * 3600 * min(self.av, 1) / 3600 * self.capacity) )** 1/2)
+            tw = 3600 / self.capacity + 3600 / 4 * ((self.av - 1) + ((self.av - 1) ** 2 +(8 * 3600 * min(self.av, 1) / (3600 * self.capacity)) )** 0.5)
         else:
             tw = 9999999999
         return round(tw)

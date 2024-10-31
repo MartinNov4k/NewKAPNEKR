@@ -40,6 +40,7 @@ class Pohyb:
         self._av = None # stupen vytížení
         self._p = None # pravděpodobnost nevzdutí nadřazených
         self._L95 = None # delka fronty 95% casu   
+        self._tw = None # střední doba zdržení
         self._spolecny_pruh = None #list cisel proudu ve společném pruhu -- asi zbytečné při refaktoru vhodně nahradit
         self._spolecny_pruh_instances = None # list instancí společných pruhů
         self._spolecny_pruh = None #list cisel proudu ve společném pruhu -- asi zbytečné při refaktoru vhodně nahradit
@@ -120,7 +121,19 @@ class Pohyb:
             self._C_spolecna = self.urci_spolecnou_C() # dodělat
         return self._C_spolecna
     
-    
+    @property
+    def tw(self):
+        if self._tw is None:
+            self._tw = self.count_tw() 
+        return self._tw
+
+
+    def count_tw(self):
+        if self.C> 0:
+            tw = 3600 / self.C + 3600 / 4 * ((self.av - 1) + ((self.av - 1) ** 2 +(8 * 3600 * min(self.av, 1) / (3600 * self.C)) )** 0.5)
+        else:
+            tw = 9999999999
+        return round(tw)
 
     def zohlednena_skladba_count(self):
         zohledenna_skladba =self.intenzita_OA + self.intenzita_PV * 1.5 + self.intenzita_NAV * 2 + self.intenzita_M * 0.8 + self.intenzita_Cyklo * 0.5
@@ -429,6 +442,7 @@ class Pohyb:
         print(f"p: {self.p}")
         print(f"C: {self.C}")
         print(f"L_95: {self.L95}")
+        print(f"Tw: {self.tw}")
         print(f"Spol pruhy: {self.spolecny_pruh}")
         print(f"Spol C: {self.C_spolecna}")
         print("--")
