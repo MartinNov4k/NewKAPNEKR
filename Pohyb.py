@@ -66,21 +66,23 @@ class Pohyb:
     @property
     def C(self):
         if self._C is None:
-            self._C = self.urci_C()
+            self._C = round(self.urci_C())
         return self._C
 
     @property
+
+    
     def av(self):
         if self._av is None:
             if self.C:
-                self._av = self.zohlednena_skladba / self.C
+                self._av = round(self.zohlednena_skladba / self.C , 2)
         return self._av
     
     @property
     def p(self):
         if self._p is None:
             if self.C:
-                p = 1 - self.av
+                p = round(1 - self.av, 2)
                 if p > 0 :
                     self._p = p
                 else:
@@ -259,7 +261,7 @@ class Pohyb:
             if self.cislo_proudu == 10:
                 px = Pohyb.P_phb(self.kriz, 1) * Pohyb.P_phb(self.kriz, 7)
                 p5 = Pohyb.P_phb(self.kriz, 5)
-                C = self.G * Pohyb.P_phb(self.kriz, 12) * (1 / (1 + ((1- px) / px) + ((1 - p5)/p5) ))
+                C = self.G * Pohyb.P_phb(self.kriz, 6) * (1 / (1 + ((1- px) / px) + ((1 - p5)/p5) ))
                 
         return C
 

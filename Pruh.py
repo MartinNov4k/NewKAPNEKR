@@ -41,7 +41,7 @@ class Pruh:
     @property
     def capacity(self):
         if self._capacity is None:
-            self._capacity = self.count_capacity()
+            self._capacity = round(self.count_capacity())
         return  self._capacity
 
     @property
