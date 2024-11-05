@@ -71,7 +71,7 @@ class Pohyb:
 
     @property
 
-    
+
     def av(self):
         if self._av is None:
             if self.C:
@@ -82,11 +82,23 @@ class Pohyb:
     def p(self):
         if self._p is None:
             if self.C:
-                p = round(1 - self.av, 2)
-                if p > 0 :
+                if self.cislo_proudu == 1 and self.spolecny_pruh_instances and self.delka_JP < self.L95:
+                    av2 = Pohyb.find_pohyb(self.kriz, 2).av
+                    av3 = Pohyb.find_pohyb(self.kriz, 3).av
+                    p = max (0, 1 - (self.av / (1- av2 - av3 )))
+                    self._p = p
+
+                elif self.cislo_proudu == 7 and self.spolecny_pruh_instances and self.delka_JP < self.L95:
+                    av8 = Pohyb.find_pohyb(self.kriz, 8).av
+                    av9 = Pohyb.find_pohyb(self.kriz, 9).av
+                    p = max (0, 1 - (self.av / (1- av8 - av9 )))
                     self._p = p
                 else:
-                    self._p = 0
+                    p = round(1 - self.av, 2)
+                    if p > 0 :
+                        self._p = p
+                    else:
+                        self._p = 0
                 
         return self._p
     
@@ -254,6 +266,7 @@ class Pohyb:
         elif self.stupen_podrazenosti == 4 : #C4 #C10
             
             if self.cislo_proudu == 4:
+                
                 px = Pohyb.P_phb(self.kriz, 1) * Pohyb.P_phb(self.kriz, 7)
                 p11 = Pohyb.P_phb(self.kriz, 11)
                 C = self.G * Pohyb.P_phb(self.kriz, 12) * (1 / (1 + ((1- px) / px) + ((1 - p11)/p11) ))
@@ -426,6 +439,12 @@ class Pohyb:
                 hledane_p = proud.p
         return hledane_p
     
+    @staticmethod
+    def find_pohyb(kritovatka, cislo):
+        for proud in kritovatka.lines:
+            if proud.cislo_proudu == cislo:
+                hledany_pohyb = proud
+        return hledany_pohyb
     
     
     
