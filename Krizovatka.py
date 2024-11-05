@@ -16,3 +16,7 @@ class Krizovatka:
             print(pohyb.cislo_proudu, pohyb.smer, pohyb.intenzita, "vjezd:", pohyb.vjezd.name)
 
     
+    def vypis_av(self):
+        print("cislo proudu", "av")
+        for pohyb in self.lines:
+            print(pohyb.cislo_proudu, pohyb.av, pohyb.C)

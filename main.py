@@ -81,3 +81,5 @@ for pohyb in cross1.lines:
 
 for pruh in Pruh.instances:
     pruh.vypis()
+
+cross1.vypis_av()
