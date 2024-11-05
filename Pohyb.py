@@ -46,6 +46,7 @@ class Pohyb:
         self._spolecny_pruh = None #list cisel proudu ve společném pruhu -- asi zbytečné při refaktoru vhodně nahradit
         self._spolecny_pruh_instances = None # list instancí společných pruhů
         self._C_spolecna = None #kapacita spolecneho pruhu
+        self._rezerva = None # rezerva kapacity
 
     #lazy evaluation
     @property
@@ -140,7 +141,12 @@ class Pohyb:
         if self._tw is None:
             self._tw = self.count_tw() 
         return self._tw
-
+    
+    @property
+    def rezerva(self):
+        if self._rezerva is None:
+            self._rezerva = self._C - self.zohlednena_skladba
+        return self._rezerva
 
     def count_tw(self):
         if self.C> 0:

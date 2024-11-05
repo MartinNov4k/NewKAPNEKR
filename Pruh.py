@@ -19,7 +19,7 @@ class Pruh:
         self._L95 = None # délka fronty
         self._tw = None
         self._av = None # self av neni v TP pro pruh, ale je to logicke
-        
+        self._rezerva = None # rezerva kapacity
 
     @property
     def zohlednena_skladba_sum(self):
@@ -61,6 +61,12 @@ class Pruh:
         if self._av is None:
             self._av = self.zohlednena_skladba_sum / self.capacity
         return self._av
+    
+    @property
+    def rezerva(self):
+        if self._rezerva is None:
+            self._rezerva = self.capacity - self.zohlednena_skladba_sum
+        return self._rezerva
 
     def count_Pvoz(self):
         Pvoz_sum = 0
@@ -88,10 +94,10 @@ class Pruh:
 
     def count_tw(self):
         if self.capacity > 0:
-            tw = 3600 / self.capacity + 3600 / 4 * ((self.av - 1) + ((self.av - 1) ** 2 +(8 * 3600 * min(self.av, 1) / (3600 * self.capacity)) )** 0.5)
+            tw = round(3600 / self.capacity + 3600 / 4 * ((self.av - 1) + ((self.av - 1) ** 2 +(8 * 3600 * min(self.av, 1) / (3600 * self.capacity)) )** 0.5))
         else:
-            tw = 9999999999
-        return round(tw)
+            tw = None
+        return tw
 
     def count_capacity(self):
 
@@ -144,9 +150,9 @@ class Pruh:
                                         )
                                     )
 
-                        if all(pohyb.delka_JP for pohyb in self.pohyby): #nejednoznačné využívání vjezdů
+                        if all(pohyb.delka_JP for pohyb in self.pohyby): #nejednoznačné využívání vjezdů vzorec 6-12
                             
-                            return (C_vpravo + C_vlevo) * (self.zohlednena_skladba_sum + pohyb_i_av + pohyb_j_av + pohyb_k_av)
+                            return min (1800, (C_vlevo *( pohyb_i_av /(pohyb_i_av + pohyb_j_av +pohyb_k_av))) + (C_vpravo *( pohyb_j_av + pohyb_k_av )/(pohyb_i_av + pohyb_j_av +pohyb_k_av)))
 
                         elif any(pohyb.smer == "R" and pohyb.delka_JP for pohyb in self.pohyby): ### rozšíření vpravo vzorec dle TP 188 6-10
                            
@@ -184,7 +190,7 @@ class Pruh:
 
 
     def vypis(self):
-        print( self.vjezd.name, self.name,"pvoz:", self.zohlednena_skladba_sum, "Capacity:", self.capacity, "L95:", self.L95, "Tw:", self.tw)
+        print( self.vjezd.name, self.name,"pvoz:", self.zohlednena_skladba_sum, "Capacity:", self.capacity, "Rezerva:",  self.rezerva,"L95:", self.L95, "Tw:", self.tw)
 
     def najdi_pohyb(self, smer):
         return next((pohyb for pohyb in self.pohyby if pohyb.smer == smer), None)
