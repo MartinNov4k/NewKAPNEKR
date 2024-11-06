@@ -175,7 +175,8 @@ class Pruh:
                     pohyb_j_av = pohyb_j.av if pohyb_j is not None else 0
                     pohyb_k_av = pohyb_k.av if pohyb_k is not None else 0
 
-                    if pohyb_j_av + pohyb_k_av >= 0 and pohyb_i_av > 0:
+                    if pohyb_j_av + pohyb_k_av >= 1 and pohyb_i_av > 0:
+                        
                         return 0
                     
                     elif  pohyb_i_av == 0:
@@ -184,7 +185,10 @@ class Pruh:
                     elif pohyb_j_av + pohyb_k_av < 1 and pohyb_i_av > 0:
                         delka_leveho = pohyb_i.delka_JP 
                         factor = (delka_leveho / 6) + 1
-                        return min((1800, (1+((pohyb_j_av + pohyb_k_av) ** factor)/ (1- pohyb_j_av - pohyb_k_av)) ** 1/factor) * pohyb_i_av)
+                        c = self.zohlednena_skladba_sum / (((1 + ((pohyb_j_av + pohyb_k_av) ** factor) / (1 - pohyb_j_av - pohyb_k_av)) ** (1 / factor)) * pohyb_i_av)
+                        
+                        return min(1800, c)
+                       
                     
                 
 
