@@ -170,10 +170,10 @@ class Pruh:
                             return C_vlevo
                         
             elif self.vjezd.rule == "hlavni":  ###doupravit pocitani bez pruhu vlevo nebo s nim se zahrnuti delky 
-                if not any(pohyb.smer == "L" and pohyb.delka_JP for pohyb in self.pohyby): # není odbočovák vlevo z hlavni
-                     return min(1800, self.zohlednena_skladba_sum /self.av_sum )
+                if not any(pohyb.smer == "L" and pohyb.delka_JP for pohyb in self.pohyby): # není odbočovák vlevo z hlavni, tady asi chyba protože samostatny pruh se zadava id a me delkouJP, ale vlastně to funguje, protože když ve spolecnych neni L vubec, tak se podminka splni
+                    return min(1800, self.zohlednena_skladba_sum /self.av_sum )
 
-                elif any(pohyb.smer == "L" and pohyb.delka_JP for pohyb in self.pohyby):
+                elif any(pohyb.smer == "L" and pohyb.delka_JP for pohyb in self.pohyby): #odbočovák vlevo je společný
                     pohyb_i = self.najdi_pohyb("L")
                     pohyb_j = self.najdi_pohyb("S")
                     pohyb_k = self.najdi_pohyb("R")
