@@ -219,7 +219,7 @@ class Pruh:
 
 
     def vypis(self):
-        print( self.vjezd.name, self.name,"pvoz:", self.zohlednena_skladba_sum, "Capacity:", self.capacity, "Rezerva:", "av:", self.av ,self.rezerva,"L95:", self.L95, "Tw:", self.tw, "UKD:", self.ukd)
+        print( self.vjezd.name, self.name,"pvoz:", self.zohlednena_skladba_sum, "Capacity:", self.capacity, "av:", self.av,  "Rezerva:",self.rezerva,"L95:", self.L95, "Tw:", self.tw, "UKD:", self.ukd)
 
     def najdi_pohyb(self, smer):
         return next((pohyb for pohyb in self.pohyby if pohyb.smer == smer), None)
