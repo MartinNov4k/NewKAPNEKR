@@ -20,6 +20,7 @@ class Pruh:
         self._tw = None
         self._av = None # self av neni v TP pro pruh, ale je to logicke
         self._rezerva = None # rezerva kapacity
+        self._ukd = None
 
     @property
     def zohlednena_skladba_sum(self):
@@ -59,7 +60,7 @@ class Pruh:
     @property
     def av(self):
         if self._av is None:
-            self._av = self.zohlednena_skladba_sum / self.capacity
+            self._av = round(self.zohlednena_skladba_sum / self.capacity,2)
         return self._av
     
     @property
@@ -67,6 +68,12 @@ class Pruh:
         if self._rezerva is None:
             self._rezerva = self.capacity - self.zohlednena_skladba_sum
         return self._rezerva
+
+    @property
+    def ukd(self):
+        if self._ukd is None:
+            self._ukd = self.count_ukd()
+        return self._ukd
 
     def count_Pvoz(self):
         Pvoz_sum = 0
@@ -188,13 +195,31 @@ class Pruh:
                         c = self.zohlednena_skladba_sum / (((1 + ((pohyb_j_av + pohyb_k_av) ** factor) / (1 - pohyb_j_av - pohyb_k_av)) ** (1 / factor)) * pohyb_i_av)
                         
                         return min(1800, c)
-                       
+
+    def count_ukd(self):
+        if self.tw:
+            if self.av < 1:
+                if self.tw <= 10:
+                    return "A"
+                elif self.tw <= 20:
+                    return "B"
+                elif self.tw <= 30:
+                    return "C"
+                elif self.tw <= 45:
+                    return "D"
+                elif self.tw > 45:
+                    return "E"
+            else:
+                return "F"
+        else:
+            return None
+
                     
                 
 
 
     def vypis(self):
-        print( self.vjezd.name, self.name,"pvoz:", self.zohlednena_skladba_sum, "Capacity:", self.capacity, "Rezerva:",  self.rezerva,"L95:", self.L95, "Tw:", self.tw)
+        print( self.vjezd.name, self.name,"pvoz:", self.zohlednena_skladba_sum, "Capacity:", self.capacity, "Rezerva:", "av:", self.av ,self.rezerva,"L95:", self.L95, "Tw:", self.tw, "UKD:", self.ukd)
 
     def najdi_pohyb(self, smer):
         return next((pohyb for pohyb in self.pohyby if pohyb.smer == smer), None)

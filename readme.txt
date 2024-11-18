@@ -2,3 +2,4 @@ u jedntolivých průhu je celý výpočet ok, jen zjistit proč se u spolčenýc
 asi by to ted chtelo doplnit pocitani jineho p -takova ta zpetna uprava- hotovo
 zjistit proč je společná kapacita 0 na hlavni, kde se to bere - vyřešeno
 rozdělit do finalni tabulky dle vzoru
+nakonec otestovat pytest nebo unitest 
