@@ -21,7 +21,7 @@ pohyb4 = Pohyb("L", 26, 1,0,0,4, Jih, cross1, 1, 1)
 #pohyb5= Pohyb("S", 45, 5,2,0,7, Jih, cross1, 1, 1, 6)
 pohyb6= Pohyb("R",  156, 17, 4 , 1, 24, Jih, cross1, 2, 1)
 
-pohyb7 = Pohyb("L", 294, 19,1,0,28, Vychod, cross1, 1, 1)
+pohyb7 = Pohyb("L", 294, 19,1,0,28, Vychod, cross1, 1, 1, 30)
 pohyb8= Pohyb("S", 282, 25, 16, 0, 14, Vychod, cross1, 2, 1)
 #pohyb9= Pohyb("R", 109, 22, 10,0, 3, Vychod, cross1, 2, 1)
 

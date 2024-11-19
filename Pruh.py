@@ -223,3 +223,6 @@ class Pruh:
 
     def najdi_pohyb(self, smer):
         return next((pohyb for pohyb in self.pohyby if pohyb.smer == smer), None)
+    
+    def export(self): # fce pro export dat
+        pass
