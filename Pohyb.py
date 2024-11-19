@@ -267,8 +267,11 @@ class Pohyb:
             C = self.G
             
         elif self.stupen_podrazenosti == 3: # C5 C11
-                C = Pohyb.P_phb(self.kriz, 1) * Pohyb.P_phb(self.kriz, 7) * self.G
-                
+                if self.vjezd.krizovatka.branch_count == 4:
+                    C = Pohyb.P_phb(self.kriz, 1) * Pohyb.P_phb(self.kriz, 7) * self.G
+                elif self.vjezd.krizovatka.branch_count == 3:
+                    C = Pohyb.P_phb(self.kriz, 7) * self.G
+
         elif self.stupen_podrazenosti == 4 : #C4 #C10
             
             if self.cislo_proudu == 4:
@@ -433,13 +436,16 @@ class Pohyb:
 
     @staticmethod
     def I_phb(kritovatka, cislo):
+        hledana_intenzita = 0
         for proud in kritovatka.lines:
             if proud.cislo_proudu == cislo:
                 hledana_intenzita = proud.intenzita
+            
         return hledana_intenzita
        
     @staticmethod
     def P_phb(kritovatka, cislo):
+        hledane_p = 0
         for proud in kritovatka.lines:
             if proud.cislo_proudu == cislo:
                 hledane_p = proud.p
