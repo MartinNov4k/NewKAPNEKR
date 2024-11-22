@@ -83,19 +83,43 @@ class Pohyb:
     def p(self):
         if self._p is None:
             if self.C:
-                if self.cislo_proudu == 1 and self.spolecny_pruh_instances and self.delka_JP < self.L95:
-                    av2 = Pohyb.find_pohyb(self.kriz, 2).av
-                    av3 = Pohyb.find_pohyb(self.kriz, 3).av
-                    p = max (0, 1 - (self.av / (1- av2 - av3 )))
-                    self._p = p
-
-                elif self.cislo_proudu == 7 and self.spolecny_pruh_instances and self.delka_JP < self.L95:
-                    av8 = Pohyb.find_pohyb(self.kriz, 8).av
-                    av9 = Pohyb.find_pohyb(self.kriz, 9).av
-                    p = max (0, 1 - (self.av / (1- av8 - av9 )))
-                    self._p = p
+                if self.cislo_proudu == 1:
+                    if self.spolecny_pruh_instances:               #pruh není samostatný
+                        av2 = Pohyb.find_pohyb(self.kriz, 2).av
+                        av3 = Pohyb.find_pohyb(self.kriz, 3).av
+                        p = max (0, 1 - (self.av / (1- av2 - av3 )))  #vzorec 6-14 "protože 1,7 nejsou samostatne)"
+                        self._p = p
+                        
+                    else:              # je to samostatný pruh
+                        if self.L95 < self.delka_JP: 
+                            self._p = round(max(0, 1 - self.av),2) # vzorec 6-3
+                        else: # delka kolony je větší než délka JP
+                            print(f"L95> delka. JP {self.cislo_proudu}")
+                            #dodělat vzorec 6-16
+                            exit()
+                            
+                    
+                elif self.cislo_proudu == 7: 
+                    if self.spolecny_pruh_instances:
+                        av8 = Pohyb.find_pohyb(self.kriz, 8).av
+                        if self.vjezd.krizovatka.branch_count == 4:
+                            av9 = Pohyb.find_pohyb(self.kriz, 9).av
+                        else:
+                            av9 = 0
+                        p = max (0, 1 - (self.av / (1- av8 - av9 )))
+                        self._p = p
+                        
+                    else:
+                        if self.L95 < self.delka_JP: 
+                            self._p = round(max(0, 1 - self.av),2) # vzorec 6-3
+                        else: # delka kolony je větší než délka JP
+                            print(f"L95> delka. JP {self.cislo_proudu}")
+                            #dodělat vzorec 6-16
+                            exit()
+                            
+                
                 else:
-                    p = round(1 - self.av, 2)
+                    p = round(1 - self.av, 2)  # vzorec 6-3
                     if p > 0 :
                         self._p = p
                     else:

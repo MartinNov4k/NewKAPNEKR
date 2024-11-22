@@ -128,8 +128,25 @@ class Pruh:
 
                 else:  # min jeden ze společných pohybu ma rozšíření
                     if self.vjezd.krizovatka.branch_count == 3:
-                        pass # dodělat
-        
+                        pohyb_j = self.najdi_pohyb("L")
+                        pohyb_k = self.najdi_pohyb("R")
+                        
+                        if pohyb_j.delka_JP is None:
+                            Lu = pohyb_k.delka_JP
+                        elif pohyb_j.delka_JP is None:
+                            Lu = pohyb_j.delka_JP
+                        else:
+                            Lu = max(pohyb_j.delka_JP, pohyb_k.delka_JP)
+                        
+                        
+                        pohyb_j_av = pohyb_j.av if pohyb_j is not None else 0
+                        pohyb_k_av = pohyb_k.av if pohyb_k is not None else 0
+                        factor_odocniny= (Lu / 6) + 1
+                        
+                        c = self.zohlednena_skladba_sum / ((pohyb_j_av ** factor_odocniny)  + (pohyb_k_av ** factor_odocniny))  **(1/factor_odocniny)                        
+                        return min(1800,c )
+                        
+                        
                     elif self.vjezd.krizovatka.branch_count == 4:
                         # i-L, j-S,k -R
                         pohyb_i = self.najdi_pohyb("L")
