@@ -95,8 +95,9 @@ class Pohyb:
                             self._p = round(max(0, 1 - self.av),2) # vzorec 6-3
                         else: # delka kolony je větší než délka JP
                             print(f"L95> delka. JP {self.cislo_proudu}")
-                            #dodělat vzorec 6-16
-                            exit()
+
+                            self._p =self.p_6_14_count(1,2,3)                                      
+                            
                             
                     
                 elif self.cislo_proudu == 7: 
@@ -114,8 +115,8 @@ class Pohyb:
                             self._p = round(max(0, 1 - self.av),2) # vzorec 6-3
                         else: # delka kolony je větší než délka JP
                             print(f"L95> delka. JP {self.cislo_proudu}")
-                            #dodělat vzorec 6-16
-                            exit()
+                            
+                            self._p =self.p_6_14_count(7,8,9) 
                             
                 
                 else:
@@ -457,6 +458,20 @@ class Pohyb:
         a_vi = 0 # vlevo
           """
         
+
+
+    
+
+    def p_6_14_count(self,i,j,k):  # vzorec 6-14
+        Ll= self.delka_JP
+        fct_odmc = (Ll/6) + 1
+        avi =  Pohyb.find_pohyb(self.kriz, i).av if Pohyb.find_pohyb(self.kriz, i) is not None else 0
+        avj = Pohyb.find_pohyb(self.kriz, j).av if Pohyb.find_pohyb(self.kriz, j) is not None else 0
+        avk = Pohyb.find_pohyb(self.kriz, k).av if Pohyb.find_pohyb(self.kriz, k) is not None else 0
+
+        p = 1-(avi *((1+ (((avj + avk)**fct_odmc) / (1- (avj+avk)))) ** (1/fct_odmc)))  # vzorec 6-16
+
+        return  max(0,p) 
 
     @staticmethod
     def I_phb(kritovatka, cislo):
