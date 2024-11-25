@@ -1,10 +1,15 @@
 
-rozdělit do finalni tabulky dle vzoru -done
-prizpusobit pro stykovku - done
-zkontrolovat nahrady px když kolona na hlavni a dodělat podmínku, že když l95>lu, bude ovlivnen i smer primo - to už bylo zahrnuto
+Funkční prototyp pro výpočet kapacity neřízené křižovatky dle Technických podmínek 188 – Posuzování kapacit křižovatek a úseků pozemních komunikací (2018).
 
-pohyb řádek 117 dodělat 6-16
+Na základě vstupních parametrů, jako jsou intenzity dopravy, uspořádání řadících pruhů, návrhová rychlost a typ přednosti v jízdě, program vypočítává klíčové ukazatele pro jednotlivé křižovatkové pohyby i jízdní pruhy:
 
+Průměrné zdržení na vozidlo,
+Délku kolony na vjezdu,
+Úroveň kvality dopravy (LOS) podle ČSN 73 6102.
+Pro zajištění maximální přenositelnosti a kompatibility s prostředími používanými ve veřejné správě využívá program pouze čistý Python bez externích knihoven.
 
+Struktura kódu je modulární a navržena s ohledem na budoucí rozšiřitelnost. Jednotlivé funkce a třídy jsou logicky odděleny do samostatných modulů, což umožňuje snadnou integraci do různých aplikací. Program je připraven pro více způsobů nasazení:
 
-nakonec otestovat pytest nebo unitest 
+Lokální aplikace s GUI (např. Tkinter),
+Cloudová nebo SaaS platforma (připravená verze ve frameworku Django v přidruženém repozitáři).
+Tento prototyp představuje praktický nástroj pro projektanty dopravních staveb a specialisty na dopravní inženýrství. Nabízí přesné výpočty a flexibilitu použití, a je proto ideálním řešením pro analýzu kapacity neřízených křižovatek dle aktuálních technických norem.
