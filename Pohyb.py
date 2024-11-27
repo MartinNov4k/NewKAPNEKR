@@ -1,5 +1,6 @@
 import math
-from Pruh import Pruh
+from pruh import Pruh
+
 class Pohyb:
     def __init__(self, smer, intenzita_OA, intenzita_PV,intenzita_NAV, intenzita_M, intenzita_Cyklo, vjezd, krizovatka, id, pocet_pruhu, delka_pruhu_nebo_roszireni=None):
         
@@ -367,100 +368,7 @@ class Pohyb:
                     break
         
     
-    def urci_spolecnou_C(self):
-        if self.stupen_podrazenosti > 1 and len(self.spolecny_pruh) >= 1 and self.vjezd.rule == "vedlejsi":  # vjezdy z vedlejsi
-            
-            if self.delka_JP is None and all(pohyb.delka_JP is None for pohyb in self.spolecny_pruh_instances[:2]): # ověření zda žádny z pohybů ze společných proudů nemá rozšíření
-                # neni rozšíření ani na jednom společném pohybu
-                sum_I = self.zohlednena_skladba
-                sum_av = self.av
-                for pohyb in self.vjezd.lines:
-                    for spolecny_pruh in self.spolecny_pruh:
-                        if pohyb.cislo_proudu == spolecny_pruh:
-                            sum_I += pohyb.zohlednena_skladba
-                            sum_av += pohyb.av
-                            
-                return sum_I /sum_av
-        
-            else:    # min jeden ze společných pohybu ma rozšíření
-                if self.kriz.branch_count == 3:
-                    pass # dodělat
 
-                elif self.kriz.branch_count == 4:
-                    if all(pohyb.delka_JP for pohyb in self.spolecny_pruh_instances[:2]): #nejednoznačné využívání vjezdů
-                        pass #doplnit přislušné vzorce 
-
-                    elif (                                                  ### rozšíření vpravo
-                            self.smer == "R" and self.delka_JP
-                        ) or (
-                            self.spolecny_pruh_instances[0].delka_JP and
-                            self.spolecny_pruh_instances[0].druh == "R"
-                        ) or (
-                            len(self.spolecny_pruh_instances) > 1 and
-                            self.spolecny_pruh_instances[1].delka_JP and
-                            self.spolecny_pruh_instances[1].druh == "R"
-                        ):
-                        
-                        pass
-
-                    elif (                                                  ### rozšíření vlevo
-                            self.smer == "L" and self.delka_JP
-                        ) or (
-                            self.spolecny_pruh_instances[0].delka_JP and
-                            self.spolecny_pruh_instances[0].druh == "L"
-                        ) or (
-                            len(self.spolecny_pruh_instances) > 1 and
-                            self.spolecny_pruh_instances[1].delka_JP and
-                            self.spolecny_pruh_instances[1].druh == "L"
-                        ):
-                        pass 
-
-
-    
-   
-       
-        elif self.vjezd.rule == "hlavni":  ###doupravit pocitani bez pruhu vlevo nebo s nim se zahrnuti delky 
-            sum_I = self.zohlednena_skladba
-            sum_av = self.av
-            if self.delka_JP is None:
-                for pohyb in self.vjezd.lines:
-                    for spolecny_pruh in self.spolecny_pruh:
-                        if pohyb.cislo_proudu == spolecny_pruh:
-                            sum_I += pohyb.zohlednena_skladba
-                            sum_av += pohyb.av
-                c_spol = sum_I /sum_av
-                if c_spol >= 1800:
-                    return 1800
-                else:
-                    return c_spol
-            elif self.delka_JP:
-                pass
-            elif self.delka_JP:
-                # dodělat pro případy s odobočovací JP
-                pass
-
-        
-
-        
-        else:
-            return None
-
-    """ def urceni_spolecne_c_rozsireni_vpravo(self): #vzorec 6-10 dle TP 188
-        I_ijk = 0  # i-L, j-S,k -R
-        a_vi = 0 # vlevo
-        a_vj = 0 
-        av_k = 0
-
-        for pohyb in self.spolecny_pruh_instances:
-            I_ijk += pohyb.zohlednena_skladba
-
-
-        a_vi = 0 # vlevo
-          """
-        
-
-
-    
 
     def p_6_14_count(self,i,j,k):  # vzorec 6-14
         Ll= self.delka_JP
@@ -502,7 +410,7 @@ class Pohyb:
     def vypis_vlastnosti(self):
         print("--")
         print(self.cislo_proudu)
-        print(f"Vjezd: {self.vjezd.name}") # tady by se asi nemělo odkazovat na atribut z jine class
+        print(f"Vjezd: {self.vjezd.name}") 
         print(f"Směr: {self.smer}")
         print(f"Přednost: {self.rule}")
         print(f"stupen podrazenosti {self.stupen_podrazenosti}")
@@ -516,5 +424,5 @@ class Pohyb:
         print(f"L_95: {self.L95}")
         print(f"Tw: {self.tw}")
         print(f"Spol pruhy: {self.spolecny_pruh}")
-        print(f"Spol C: {self.C_spolecna}")
+        
         print("--")

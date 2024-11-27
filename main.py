@@ -1,12 +1,12 @@
-from Krizovatka import Krizovatka
-from Pohyb import Pohyb
-from Vjezd import Vjezd
-from Pruh import Pruh
-
-### použití pokusné ###############################################################
+from krizovatka import Krizovatka
+from pohyb import Pohyb
+from vjezd import Vjezd
+from pruh import Pruh
 
 
-## nezapomínat u odbočení z hlavní vlevo vždy delku jp 999 nebo real
+
+
+## příklad zadání
 
 cross1= Krizovatka("Dablicka x Bestakova", 4, 77)
 
@@ -32,26 +32,8 @@ pohyb10 = Pohyb("L", 123, 18,14,0,2, Sever,cross1, 1, 1,6)
 pohyb11= Pohyb("S", 16 ,1,0,0,4, Sever, cross1, 1, 1, 6)
 pohyb12= Pohyb("R", 4, 2,0,0,0, Sever, cross1, 1, 1, 6)
 
-""" print(pohyb1.Tf)
-print(pohyb1.Tg)
 
-print(pohyb1.smer)
-print(pohyb1.druh)
-print(vjezd1.orientace)
-print(pohyb1.vjezd.name)
-print(pohyb1.vjezd.krizovatka.name)
-
-print(cross1.branch_count)
-
-print(vjezd2.rule_type)
-
-print(pohyb1.stupen_podrazenosti)
-
-print(pohyb1.cislo_proudu)
-
- """
-""" print(pohyb12.cislo_proudu)
-print(pohyb6.cislo_proudu) """
+# výpis vybraných parametrů
 
 cross1.vypsat_vsechny_pohyby()
 
@@ -63,23 +45,8 @@ for pohyb in cross1.lines:
 print(pohyb1.kriz.branch_count)
 
 
-
-""" for pohyb in Jih.lines:
-    print(pohyb.cislo_proudu)
-    print(pohyb.druh)
-    print(pohyb.zohlednena_skladba)
-    print( f"nadrazene proudy I {pohyb.intenzita_nadrazenych}")
-    print( f"nadrazene proudy I {pohyb.intenzita_nadrazenych}")
-    print(pohyb.av)
-    print(pohyb.C)
-    print(pohyb.C_spolecna)
-    print("--") """
-
-
-
 for pohyb in cross1.lines:
     pohyb.rozrazeni_pruhu()
-
 
 
 for pruh in Pruh.instances:
