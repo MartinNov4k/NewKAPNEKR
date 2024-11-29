@@ -1,5 +1,5 @@
 import math
-from pruh import Pruh
+from logic_nerizena_krizoavtka.pruh import Pruh
 
 class Pohyb:
     def __init__(self, smer, intenzita_OA, intenzita_PV,intenzita_NAV, intenzita_M, intenzita_Cyklo, vjezd, krizovatka, id, pocet_pruhu, delka_pruhu_nebo_roszireni=None):

@@ -1,8 +1,7 @@
-from krizovatka import Krizovatka
-from pohyb import Pohyb
-from vjezd import Vjezd
-from pruh import Pruh
-
+from logic_nerizena_krizoavtka.pohyb import Pohyb
+from logic_nerizena_krizoavtka.vjezd import Vjezd
+from logic_nerizena_krizoavtka.pruh import Pruh
+from logic_nerizena_krizoavtka.krizovatka import Krizovatka
 
 
 

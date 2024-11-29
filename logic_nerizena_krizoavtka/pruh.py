@@ -187,31 +187,53 @@ class Pruh:
                             return C_vlevo
                         
             elif self.vjezd.rule == "hlavni":  ## 
-                if not any(pohyb.smer == "L" and pohyb.delka_JP for pohyb in self.pohyby): # není odbočovák vlevo z hlavni, tady asi chyba protože samostatny pruh se zadava id a me delkouJP, ale vlastně to funguje, protože když ve spolecnych neni L vubec, tak se podminka splni
+                
+                if not any ( pohyb.smer == "L" for pohyb in self.vjezd.lines): # vjezd vubec nema pohyb vlevo - stykovka zapad
                     return min(1800, self.zohlednena_skladba_sum /self.av_sum )
+                
+                if "L" in self.name: #  pruh vlevo je ve společném (není samostatný pruh vlevo)
+                     return min(1800, self.zohlednena_skladba_sum /self.av_sum )
+                
+                else: # odbočovací pruh vlevo je samostatný
+                
+                    if any ( pohyb.smer == "L" and pohyb.L95 > pohyb.delka_JP for pohyb in self.vjezd.lines): #kolona v levem odbočováku přetekla
+                            print(f"delka fronty přesahuje délku ŘP u {self.vjezd.name}")
+                            pohyb_i = self.najdi_pohyb("L")
+                            pohyb_j = self.najdi_pohyb("S")
+                            pohyb_k = self.najdi_pohyb("R")
+                            
+                            pohyb_i_av = pohyb_i.av if pohyb_i is not None else 0
+                            pohyb_j_av = pohyb_j.av if pohyb_j is not None else 0
+                            pohyb_k_av = pohyb_k.av if pohyb_k is not None else 0
 
-                elif any(pohyb.smer == "L" and pohyb.delka_JP for pohyb in self.pohyby): #odbočovák vlevo je společný
-                    pohyb_i = self.najdi_pohyb("L")
-                    pohyb_j = self.najdi_pohyb("S")
-                    pohyb_k = self.najdi_pohyb("R")
+                            if pohyb_j_av + pohyb_k_av >= 1 and pohyb_i_av > 0:
+                                
+                                return 0
+                            
+                            elif  pohyb_i_av == 0:
+                                return 1800
+                            
+                            elif pohyb_j_av + pohyb_k_av < 1 and pohyb_i_av > 0:
+                                delka_leveho = pohyb_i.delka_JP 
+                                factor = (delka_leveho / 6) + 1
+                                c = self.zohlednena_skladba_sum / (((1 + ((pohyb_j_av + pohyb_k_av) ** factor) / (1 - pohyb_j_av - pohyb_k_av)) ** (1 / factor)) * pohyb_i_av)
+                                
+                                return min(1800, c)
+                        
+                    else:
+                        return min(1800, self.zohlednena_skladba_sum /self.av_sum )
+                
+                
+                
                     
-                    pohyb_i_av = pohyb_i.av if pohyb_i is not None else 0
-                    pohyb_j_av = pohyb_j.av if pohyb_j is not None else 0
-                    pohyb_k_av = pohyb_k.av if pohyb_k is not None else 0
+                
+                
+                
+                
 
-                    if pohyb_j_av + pohyb_k_av >= 1 and pohyb_i_av > 0:
-                        
-                        return 0
-                    
-                    elif  pohyb_i_av == 0:
-                        return 1800
-                    
-                    elif pohyb_j_av + pohyb_k_av < 1 and pohyb_i_av > 0:
-                        delka_leveho = pohyb_i.delka_JP 
-                        factor = (delka_leveho / 6) + 1
-                        c = self.zohlednena_skladba_sum / (((1 + ((pohyb_j_av + pohyb_k_av) ** factor) / (1 - pohyb_j_av - pohyb_k_av)) ** (1 / factor)) * pohyb_i_av)
-                        
-                        return min(1800, c)
+
+
+                
 
     def count_ukd(self):
         if self.tw:
