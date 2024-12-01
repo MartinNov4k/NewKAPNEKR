@@ -21,6 +21,7 @@ class Pruh:
         self._av = None # self av neni v TP pro pruh, ale je to logicke
         self._rezerva = None # rezerva kapacity
         self._ukd = None
+        self._max_capacity = None # maximální kapacita 1800 / 3600 v závislosti na počtu JP na hlavní ve směru přímo
 
     @property
     def zohlednena_skladba_sum(self):
@@ -74,6 +75,12 @@ class Pruh:
         if self._ukd is None:
             self._ukd = self.count_ukd()
         return self._ukd
+    
+    @property
+    def max_capacity(self):
+        if self._max_capacity is None:
+            self._max_capacity = self.count_max_capacity()
+        return self._max_capacity
 
     def count_Pvoz(self):
         Pvoz_sum = 0
@@ -189,7 +196,7 @@ class Pruh:
             elif self.vjezd.rule == "hlavni":  ## 
                 
                 if not any ( pohyb.smer == "L" for pohyb in self.vjezd.lines): # vjezd vubec nema pohyb vlevo - stykovka zapad
-                    return min(1800, self.zohlednena_skladba_sum /self.av_sum )
+                    return min(self.max_capacity, self.zohlednena_skladba_sum /self.av_sum )
                 
                 if "L" in self.name: #  pruh vlevo je ve společném (není samostatný pruh vlevo)
                      return min(1800, self.zohlednena_skladba_sum /self.av_sum )
@@ -211,26 +218,25 @@ class Pruh:
                                 return 0
                             
                             elif  pohyb_i_av == 0:
-                                return 1800
+                                return self.max_capacity
                             
                             elif pohyb_j_av + pohyb_k_av < 1 and pohyb_i_av > 0:
                                 delka_leveho = pohyb_i.delka_JP 
                                 factor = (delka_leveho / 6) + 1
                                 c = self.zohlednena_skladba_sum / (((1 + ((pohyb_j_av + pohyb_k_av) ** factor) / (1 - pohyb_j_av - pohyb_k_av)) ** (1 / factor)) * pohyb_i_av)
                                 
-                                return min(1800, c)
+                                return min(self.max_capacity, c)
                         
                     else:
-                        return min(1800, self.zohlednena_skladba_sum /self.av_sum )
+                        return min(self.max_capacity, self.zohlednena_skladba_sum /self.av_sum )
                 
                 
                 
                     
+    def count_max_capacity(self):
+        max_pocet_JP = max(pohyb.pocet_pruhu for pohyb in self.pohyby)
                 
-                
-                
-                
-
+        return max_pocet_JP * 1800
 
 
                 
