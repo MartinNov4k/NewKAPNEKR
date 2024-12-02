@@ -199,7 +199,7 @@ class Pruh:
                     return min(self.max_capacity, self.zohlednena_skladba_sum /self.av_sum )
                 
                 if "L" in self.name: #  pruh vlevo je ve společném (není samostatný pruh vlevo)
-                     return min(1800, self.zohlednena_skladba_sum /self.av_sum )
+                     return min(self.max_capacity, self.zohlednena_skladba_sum /self.av_sum )
                 
                 else: # odbočovací pruh vlevo je samostatný
                 
